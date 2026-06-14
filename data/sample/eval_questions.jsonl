@@ -1,0 +1,20 @@
+{"id":"q_001","question":"How do I connect a domain?","expected_answer_contains":["domain","DNS"],"expected_doc_ids":["doc_001"]}
+{"id":"q_002","question":"How do I publish changes to my site?","expected_answer_contains":["Publish","live"],"expected_doc_ids":["doc_002"]}
+{"id":"q_003","question":"What should I do if I forgot my password?","expected_answer_contains":["Forgot password","email"],"expected_doc_ids":["doc_003"]}
+{"id":"q_004","question":"How can I add a contact form?","expected_answer_contains":["contact form","fields"],"expected_doc_ids":["doc_004"]}
+{"id":"q_005","question":"How do I accept payments online?","expected_answer_contains":["payment provider","verification"],"expected_doc_ids":["doc_005"]}
+{"id":"q_006","question":"Where do I create a blog post?","expected_answer_contains":["Blog manager","publish"],"expected_doc_ids":["doc_006"]}
+{"id":"q_007","question":"How do I invite another person to work on my site?","expected_answer_contains":["Roles","permissions"],"expected_doc_ids":["doc_007"]}
+{"id":"q_008","question":"Can I change my site template after starting?","expected_answer_contains":["new site","move content"],"expected_doc_ids":["doc_008"]}
+{"id":"q_009","question":"Where do I edit SEO metadata?","expected_answer_contains":["title tag","meta description"],"expected_doc_ids":["doc_009"]}
+{"id":"q_010","question":"How do I add a product to my store?","expected_answer_contains":["catalog","price"],"expected_doc_ids":["doc_010"]}
+{"id":"q_011","question":"How do I configure shipping rates?","expected_answer_contains":["shipping regions","rates"],"expected_doc_ids":["doc_011"]}
+{"id":"q_012","question":"How can I create a coupon code?","expected_answer_contains":["discount","expiration"],"expected_doc_ids":["doc_012"]}
+{"id":"q_013","question":"Where can I see site analytics?","expected_answer_contains":["traffic","popular pages"],"expected_doc_ids":["doc_013"]}
+{"id":"q_014","question":"How do I send newsletters?","expected_answer_contains":["email marketing","campaigns"],"expected_doc_ids":["doc_014"]}
+{"id":"q_015","question":"Can I restore an older version of my site?","expected_answer_contains":["site history","restore"],"expected_doc_ids":["doc_015"]}
+{"id":"q_016","question":"How do I upload a custom font?","expected_answer_contains":["custom font","brand settings"],"expected_doc_ids":["doc_016"]}
+{"id":"q_017","question":"How do I create member-only pages?","expected_answer_contains":["members area","member-only"],"expected_doc_ids":["doc_017"]}
+{"id":"q_018","question":"How do I manage appointment bookings?","expected_answer_contains":["services","availability"],"expected_doc_ids":["doc_018"]}
+{"id":"q_019","question":"How do I cancel my paid plan?","expected_answer_contains":["billing","cancellation"],"expected_doc_ids":["doc_019"]}
+{"id":"q_020","question":"Why is SSL not ready after connecting my domain?","expected_answer_contains":["SSL","certificate"],"expected_doc_ids":["doc_020"]}
