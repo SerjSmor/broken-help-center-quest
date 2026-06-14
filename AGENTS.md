@@ -47,6 +47,13 @@ uv run --extra dev invoke test
 uv run buildguild status
 ```
 
+Repo-local slash command prompts:
+
+```text
+.claude/commands/status.md
+.codex/commands/status.md
+```
+
 Do not show bare `buildguild ...` commands in learner-facing output unless the instructions also explain that the project environment must be activated. Prefer `uv run buildguild ...`.
 
 Upcoming implementation phases:

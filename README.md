@@ -123,6 +123,19 @@ Use status whenever you are unsure what to do next:
 uv run buildguild status
 ```
 
+If you are using an agent, you can also use the repo-local slash command:
+
+```text
+/status
+```
+
+The slash command is defined for Claude Code and Codex in:
+
+```text
+.claude/commands/status.md
+.codex/commands/status.md
+```
+
 The flow is:
 
 ```text
