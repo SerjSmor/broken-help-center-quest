@@ -1,6 +1,6 @@
 # Quest 1: The Bot Works. Nobody Knows If It Is Good.
 
-The company has a help-center assistant based on a WixQA-style dataset.
+The fictional company has a help-center assistant evaluated against a WixQA-derived benchmark dataset.
 
 It technically works, but nobody knows whether it retrieves the right documents, answers correctly, or fails in obvious ways.
 

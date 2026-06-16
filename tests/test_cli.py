@@ -26,7 +26,7 @@ def test_cli_rejects_unknown_skill():
 def test_cli_rejects_unknown_quest():
     runner = CliRunner()
 
-    result = runner.invoke(app, ["run", "skill", "product-onboarding", "--quest", "quest-99"])
+    result = runner.invoke(app, ["run", "skill", "maya-tests-outputs", "--quest", "quest-99"])
 
     assert result.exit_code != 0
     assert "Only quest-01" in result.output

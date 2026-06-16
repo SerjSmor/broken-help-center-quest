@@ -10,6 +10,7 @@ from buildguild.state import load_state
 
 QUEST_KEY = "quest_01"
 PRODUCT_REQUIREMENTS_PATH = Path("requirements/quest_01_product_requirements.md")
+DATA_TOUR_NOTES_PATH = Path("notes/quest_01_data_tour.md")
 IMPLEMENTATION_SPEC_PATH = Path("specs/quest_01_implementation_spec.md")
 REPORT_PATH = Path("reports/baseline_report.md")
 IMPLEMENTATION_FILES = [
@@ -35,6 +36,7 @@ def inspect_status() -> Status:
 
     onboarding_done = bool(quest.get("product_onboarding_completed"))
     product_requirements_found = PRODUCT_REQUIREMENTS_PATH.exists()
+    data_tour_notes_found = DATA_TOUR_NOTES_PATH.exists()
     data_tour_completed = bool(quest.get("data_tour_completed"))
     implementation_spec_found = IMPLEMENTATION_SPEC_PATH.exists()
     implementation_spec_completed = bool(quest.get("implementation_spec_completed"))
@@ -47,6 +49,7 @@ def inspect_status() -> Status:
 
     _record(completed, missing, onboarding_done, "Product onboarding completed")
     _record(completed, missing, product_requirements_found, "Product requirements found")
+    _record(completed, missing, data_tour_notes_found, "Data tour notes found")
     _record(completed, missing, data_tour_completed, "Data tour completed")
     _record(completed, missing, implementation_spec_found, "Implementation spec found")
     _record(completed, missing, implementation_spec_completed, "Implementation spec completed")
@@ -59,25 +62,25 @@ def inspect_status() -> Status:
             stage="Product discovery",
             completed=completed,
             missing=missing,
-            next_action="Ask your coding agent to use skills/maya-product-lead.md, complete the three discovery checkboxes, and create requirements/quest_01_product_requirements.md.",
+            next_action="Ask your coding agent to use skills/maya-product-lead.md, complete the four discovery checkboxes, and create requirements/quest_01_product_requirements.md.",
         )
-    if not data_tour_completed:
+    if not data_tour_notes_found or not data_tour_completed:
         return Status(
             stage="Tour the data",
             completed=completed,
             missing=missing,
-            next_action="Run: uv run --extra dev invoke tour. After reviewing the data, set quest_01.data_tour_completed = true in .buildguild/state.json.",
+            next_action="Ask your coding agent to use skills/ari-data-guide.md, inspect the dataset, write notes/quest_01_data_tour.md, and set quest_01.data_tour_completed = true.",
         )
     if not implementation_spec_found or not implementation_spec_completed:
         return Status(
             stage="Write implementation spec",
             completed=completed,
             missing=missing,
-            next_action="Ask your coding agent to use skills/write-implementation-spec.md and create specs/quest_01_implementation_spec.md.",
+            next_action="Ask your coding agent to use skills/write-technical-spec.md and create specs/quest_01_implementation_spec.md.",
         )
     if not implementation_complete:
         return Status(
-            stage="Implement baseline RAG",
+            stage="Implement baseline evaluation",
             completed=completed,
             missing=missing,
             next_action='Implement: python -m app.ask "How do I connect a domain?" and python -m evals.run_baseline',

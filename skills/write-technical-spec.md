@@ -3,7 +3,8 @@
 Use this skill after:
 
 - `requirements/quest_01_product_requirements.md` exists.
-- The learner has run and reviewed the data tour.
+- `notes/quest_01_data_tour.md` exists.
+- The learner has completed Ari's data tour.
 - `.buildguild/state.json` has `quest_01.data_tour_completed = true`.
 
 The learner and coding agent should collaboratively create:
@@ -44,6 +45,10 @@ This is the actual implementation ticket for Quest 1.
 ## Evaluation Plan Must Include
 
 - Command: `python -m evals.run_baseline`
+- Retrieval uses the existing backend lexical retriever in `app/retrieval.py`.
+- The learner implements the evaluation harness, simple answer generation, CLI path, and report.
+- Retrieval evaluates whether the expected WixQA source article appears in the top 5 retrieved documents.
+- Answer generation evaluates a simple baseline answer against reference-answer terms.
 - Metrics:
   - `retrieval_hit_rate@5`
   - `answer_match_rate`

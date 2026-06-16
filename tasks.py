@@ -9,7 +9,7 @@ def install(ctx):
 
 @task
 def data(ctx):
-    """Prepare sample data into data/processed."""
+    """Prepare the WixQA-derived benchmark into data/processed."""
     ctx.run("python3 scripts/prepare_dataset.py")
 
 

@@ -48,11 +48,12 @@ def test_status_after_onboarding_and_requirements_points_to_data_tour(tmp_path, 
     status = inspect_status()
 
     assert status.stage == "Tour the data"
-    assert "invoke tour" in status.next_action
+    assert "skills/ari-data-guide.md" in status.next_action
+    assert "notes/quest_01_data_tour.md" in status.next_action
     assert "data_tour_completed = true" in status.next_action
 
 
-def test_status_after_data_tour_points_to_implementation_spec(tmp_path, monkeypatch):
+def test_status_after_state_only_stays_on_data_tour_until_notes_exist(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     save_state(
         {
@@ -68,8 +69,30 @@ def test_status_after_data_tour_points_to_implementation_spec(tmp_path, monkeypa
 
     status = inspect_status()
 
+    assert status.stage == "Tour the data"
+    assert "Data tour notes found" in status.missing
+
+
+def test_status_after_data_tour_points_to_implementation_spec(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    save_state(
+        {
+            "quest_01": {
+                "product_onboarding_completed": True,
+                "data_tour_completed": True,
+                "implementation_spec_completed": False,
+            }
+        }
+    )
+    Path("requirements").mkdir()
+    Path("requirements/quest_01_product_requirements.md").write_text("# Product Requirements\n")
+    Path("notes").mkdir()
+    Path("notes/quest_01_data_tour.md").write_text("# Data Tour Notes\n")
+
+    status = inspect_status()
+
     assert status.stage == "Write implementation spec"
-    assert "skills/write-implementation-spec.md" in status.next_action
+    assert "skills/write-technical-spec.md" in status.next_action
     assert "specs/quest_01_implementation_spec.md" in status.next_action
 
 
@@ -86,12 +109,14 @@ def test_status_after_implementation_spec_points_to_implementation(tmp_path, mon
     )
     Path("requirements").mkdir()
     Path("requirements/quest_01_product_requirements.md").write_text("# Product Requirements\n")
+    Path("notes").mkdir()
+    Path("notes/quest_01_data_tour.md").write_text("# Data Tour Notes\n")
     Path("specs").mkdir()
     Path("specs/quest_01_implementation_spec.md").write_text("# Technical Spec\n")
 
     status = inspect_status()
 
-    assert status.stage == "Implement baseline RAG"
+    assert status.stage == "Implement baseline evaluation"
     assert "python -m app.ask" in status.next_action
 
 
@@ -109,6 +134,8 @@ def test_status_after_report_points_to_maya_review(tmp_path, monkeypatch):
     )
     Path("requirements").mkdir()
     Path("requirements/quest_01_product_requirements.md").write_text("# Product Requirements\n")
+    Path("notes").mkdir()
+    Path("notes/quest_01_data_tour.md").write_text("# Data Tour Notes\n")
     Path("specs").mkdir()
     Path("specs/quest_01_implementation_spec.md").write_text("# Technical Spec\n")
     Path("app").mkdir()
@@ -140,6 +167,8 @@ def test_status_after_maya_review_is_complete(tmp_path, monkeypatch):
     )
     Path("requirements").mkdir()
     Path("requirements/quest_01_product_requirements.md").write_text("# Product Requirements\n")
+    Path("notes").mkdir()
+    Path("notes/quest_01_data_tour.md").write_text("# Data Tour Notes\n")
     Path("specs").mkdir()
     Path("specs/quest_01_implementation_spec.md").write_text("# Technical Spec\n")
     Path("app").mkdir()

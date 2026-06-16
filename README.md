@@ -4,7 +4,9 @@ Welcome to BuildGuild, a repo-based learning game where you build AI products by
 
 You are the engineer on Quest 1.
 
-The company has a help-center bot. It answers questions, sort of. Nobody knows if it retrieves the right articles, whether the answers are useful, or where it fails.
+The fictional company has a help-center bot. It answers questions, sort of. Nobody knows if it retrieves the right articles, whether the answers are useful, or where it fails.
+
+Quest 1 uses the WixQA benchmark from Hugging Face as the task dataset. The company is fictional, but the knowledge base and evaluation data are WixQA-derived because they provide a realistic website-builder support corpus without exposing proprietary production data.
 
 Your mission:
 
@@ -52,10 +54,11 @@ She will welcome you to SiteForge, ask your name because she is bad at names, an
 
 Maya will not write the ticket for you.
 
-Maya tracks discovery with three hidden checkboxes:
+Maya tracks discovery with four hidden checkboxes:
 
 ```text
 Discovery checklist:
+- [ ] ???
 - [ ] ???
 - [ ] ???
 - [ ] ???
@@ -65,7 +68,7 @@ Ask the right product questions to uncover each area. When you ask a useful ques
 
 You can ask Maya for a tip. Tips should nudge you without revealing the answer.
 
-Once all three are checked, the agent should create:
+Once all four are checked, the agent should create:
 
 ```text
 requirements/quest_01_product_requirements.md
@@ -75,7 +78,15 @@ Then the agent should update `.buildguild/state.json` and set `quest_01.product_
 
 ## Tour The Data
 
-Before implementing retrieval or evaluation, run the data tour:
+Before implementing retrieval or evaluation, ask your coding agent to become Ari, the EDA guide:
+
+```text
+Use skills/ari-data-guide.md to tour the data with me.
+```
+
+Ari is the coding agent in EDA mode. Ari should inspect the dataset, explain the scripts and checks behind the findings, and help you understand what the baseline can rely on.
+
+If you want the visual companion app during the tour, run:
 
 ```text
 uv run --extra dev invoke tour
@@ -86,10 +97,16 @@ The Streamlit app shows:
 - Help-center articles.
 - Evaluation questions.
 - Expected answer terms.
-- Expected document links.
+- Expected help article sources and content.
 - A few guided question-to-document examples.
 
-After you have reviewed the tour, update `.buildguild/state.json`:
+Ari should create:
+
+```text
+notes/quest_01_data_tour.md
+```
+
+Then Ari should update `.buildguild/state.json`:
 
 ```json
 {
@@ -101,7 +118,7 @@ After you have reviewed the tour, update `.buildguild/state.json`:
 
 ## Write The Technical Spec
 
-After product requirements and the data tour, ask your coding agent:
+After product requirements and Ari's data tour, ask your coding agent:
 
 ```text
 Use skills/write-technical-spec.md to help me write the Quest 1 technical spec.
@@ -126,15 +143,36 @@ uv run buildguild status
 If you are using an agent, you can also use the repo-local slash command:
 
 ```text
-/status
+/quest-status
 ```
 
-The slash command is defined for Claude Code and Codex in:
+The shared status skill is:
 
 ```text
-.claude/commands/status.md
-.codex/commands/status.md
+skills/quest-status.md
 ```
+
+Claude Code and Codex slash-command wrappers point to that same skill:
+
+```text
+.claude/commands/quest-status.md
+.codex/commands/quest-status.md
+```
+
+Claude Code can also show the current quest stage in its status line. This repo includes:
+
+```text
+.claude/settings.json
+tools/quest_statusline.py
+```
+
+If Claude Code does not pick it up automatically, run `/statusline` inside Claude Code and set the command to:
+
+```text
+python3 tools/quest_statusline.py
+```
+
+The status line is intentionally read-only and does not run `uv`; it reads `.buildguild/state.json` and checks the expected quest files directly.
 
 The flow is:
 
@@ -142,7 +180,7 @@ The flow is:
 check status
 talk to Maya
 generate product requirements
-tour the data
+tour the data with Ari
 write the technical spec
 build the baseline RAG
 run the evaluation
@@ -152,13 +190,21 @@ validate the quest
 
 ## What You Will Build
 
-You will eventually implement:
+The backend team already wrote a simple lexical retriever in:
 
-- Baseline retrieval.
+```text
+app/retrieval.py
+```
+
+Nobody knows how well it performs. Quest 1 evaluates that existing baseline over the WixQA-derived benchmark:
+
+- Existing lexical retrieval baseline.
 - Baseline answer generation.
 - `python -m app.ask "How do I connect a domain?"`
 - `python -m evals.run_baseline`
 - `reports/baseline_report.md`
+
+The most important score is retrieval quality: did the backend retriever include the expected WixQA source article in the top 5 results? The generated-answer checks are intentionally simple for Quest 1: compare the answer against reference-answer terms, measure answer length, and report concrete positive and negative examples.
 
 The report should include metric definitions, baseline scores, positive examples, and negative failed examples.
 
@@ -178,7 +224,7 @@ Run tests:
 uv run --extra dev invoke test
 ```
 
-Prepare sample data:
+Prepare the WixQA-derived benchmark from Hugging Face:
 
 ```text
 uv run --extra dev invoke data
@@ -189,7 +235,7 @@ uv run --extra dev invoke data
 This repo currently contains the early playable skeleton:
 
 - Quest status.
-- Sample data preparation.
+- WixQA dataset preparation through Hugging Face `datasets`.
 - Maya persona skill for agent-mediated conversation.
 - Maya report-review skill.
 - CLI routing.

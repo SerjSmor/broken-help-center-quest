@@ -27,12 +27,6 @@ def run_skill(
     if quest != "quest-01":
         raise typer.BadParameter("Only quest-01 is available in this POC.", param_hint="--quest")
 
-    if skill_name == "product-onboarding":
-        from buildguild.skills.product_onboarding import run
-
-        run()
-        return
-
     if skill_name == "test-baseline-rag":
         from buildguild.skills.test_baseline_rag import run
 
@@ -46,7 +40,7 @@ def run_skill(
         return
 
     raise typer.BadParameter(
-        "Unknown skill. Available skills: product-onboarding, maya-tests-outputs, test-baseline-rag.",
+        "Unknown skill. Available skills: maya-tests-outputs, test-baseline-rag.",
         param_hint="skill_name",
     )
 
