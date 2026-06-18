@@ -29,8 +29,11 @@ def build_status_line(root: Path) -> str:
 
 
 def inspect_checks(root: Path) -> dict[str, bool]:
-    quest = load_quest_state(root)
+    state = load_state(root)
+    quest = state.get(QUEST_KEY, {})
+    player = state.get("player", {})
     return {
+        "setup": bool(player.get("setup_completed")),
         "product_onboarding": bool(quest.get("product_onboarding_completed")),
         "product_requirements": (root / PRODUCT_REQUIREMENTS_PATH).exists(),
         "implementation_spec_file": (root / IMPLEMENTATION_SPEC_PATH).exists(),
@@ -42,6 +45,8 @@ def inspect_checks(root: Path) -> dict[str, bool]:
 
 
 def resolve_stage(checks: dict[str, bool]) -> tuple[str, str]:
+    if not checks["setup"]:
+        return "Quest setup", "buildguild start"
     if not checks["product_onboarding"] or not checks["product_requirements"]:
         return "Product discovery", "/quest-status"
     if not checks["implementation_spec_file"] or not checks["implementation_spec_done"]:
@@ -52,10 +57,10 @@ def resolve_stage(checks: dict[str, bool]) -> tuple[str, str]:
         return "Run evaluation", "baseline report"
     if not checks["maya_review"]:
         return "Maya review", "maya-tests-outputs"
-    return "Complete", "Quest 2 ready"
+    return "Complete", "watch repo"
 
 
-def load_quest_state(root: Path) -> dict[str, Any]:
+def load_state(root: Path) -> dict[str, Any]:
     state_path = root / STATE_PATH
     if not state_path.exists():
         return {}
@@ -65,9 +70,8 @@ def load_quest_state(root: Path) -> dict[str, Any]:
     except json.JSONDecodeError:
         return {}
 
-    quest = data.get(QUEST_KEY, {})
-    if isinstance(quest, dict):
-        return quest
+    if isinstance(data, dict):
+        return data
     return {}
 
 

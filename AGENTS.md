@@ -7,7 +7,7 @@ BuildGuild Broken Help Center is a repo-based learning project for users working
 The intended quest flow is:
 
 ```text
-status -> agent-mediated Maya onboarding -> Ari data tour -> technical spec -> learner implementation -> Maya report review
+start -> status -> agent-mediated Maya onboarding -> Ari data tour -> technical spec -> learner implementation -> Maya report review
 ```
 
 Implemented so far:
@@ -16,12 +16,21 @@ Implemented so far:
 - Python Invoke task runner.
 - State helper.
 - Status command.
+- Start command for player name and difficulty.
 - CLI router.
 - Sample data pipeline.
 - Maya persona scaffold in `skills/maya-product-lead.md`.
 
 Important constraints:
 
+- Quest 1 starts with `uv run buildguild start`.
+- Setup asks: "What is your name, brave adventurer?" and "How much guidance do you want on this quest?"
+- Difficulty is stored at `player.difficulty` in `.buildguild/state.json`.
+- Default difficulty is `easy`.
+- Difficulty is player-facing guidance level:
+  - `easy`: Apprentice mode with direct hints, clear nudges, and frequent check-ins.
+  - `medium`: Builder mode with fewer hints; the player drives the investigation.
+  - `hard`: Expert mode with minimal spoon-feeding and distracting noise while keeping facts, files, commands, and artifacts correct.
 - Do not generate `issues/quest_01_baseline.md` for the learner.
 - Product discovery must produce `analysis/quest_01_product_requirements.md` before the learner writes the engineering ticket.
 - The technical spec at `analysis/quest_01_implementation_spec.md` is the implementation ticket. There is no separate ticket-review gate.
@@ -38,12 +47,16 @@ Important constraints:
 - Do not ship a complete baseline RAG solution in the starter repo.
 - Product onboarding is not a local fallback chat. Use `skills/maya-product-lead.md` and reveal facts gradually.
 - When the four discovery gates are complete, create `analysis/quest_01_product_requirements.md`, then update `.buildguild/state.json` with `quest_01.product_onboarding_completed = true`.
+- Unlock `product_hunch` after product discovery, `data_intuition` after Ari's spec step, and `baseline_before_optimization` after Maya accepts the report.
+- Quest 1 completion levels the player to Level 2, title `Baseline Builder`.
+- Quest 2 is not available yet; tell the player to watch the repo for updates.
 - After product discovery, use `skills/ari-data-guide.md` for EDA and technical spec writing. Ari may inspect files and run small scripts, but must not implement the baseline evaluator.
 - Keep agentic RAG, reranking, hybrid retrieval, Slack, GitHub API, and dashboards out of Quest 1 scope.
 
 Useful commands:
 
 ```text
+uv run buildguild start
 uv run --extra dev invoke data
 uv run --extra dev invoke test
 uv run buildguild status
@@ -75,6 +88,4 @@ Do not show bare `buildguild ...` commands in learner-facing output unless the i
 
 Upcoming implementation phases:
 
-- Learner scaffolding in `app/` and `evals/`.
-- Quest validator skill.
-- Reference implementation kept outside the starter repo.
+- Quest 2 will arrive in a future repo update.

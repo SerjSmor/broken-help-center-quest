@@ -17,6 +17,8 @@ def test_ari_data_guide_skill_defines_required_eda_flow():
     assert "The durable output of Ari's step is `analysis/quest_01_implementation_spec.md`" in text
     assert "analysis/quest_01_eda.py" in text
     assert "Do not quiz the learner" in text
+    assert "player.difficulty" in text
+    assert "Hard is Expert mode" in text
     assert "analysis/quest_01_product_requirements.md" in text
     assert "data/processed/documents.jsonl" in text
     assert "data/processed/questions.jsonl" in text
@@ -56,14 +58,21 @@ def test_ari_data_guide_skill_defines_required_eda_flow():
     assert "## Data Tour Findings" in text
     assert "### Questions And Articles Understood" in text
     assert "quest_01.implementation_spec_completed = true" in text
+    assert "Achievement unlocked: Data Intuition" in text
     assert "Do not implement the baseline evaluator" in text
 
 
 def test_maya_introduces_ari_in_completion_message():
     text = Path("skills/maya-product-lead.md").read_text()
 
+    assert "uv run buildguild banner" in text
+    assert "uv run buildguild start" in text
+    assert "player.difficulty" in text
+    assert "Expert mode. Minimal spoon-feeding" in text
+    assert "Show the BuildGuild Quest 1 opening banner" in text
     assert "I am sending you to Ari" in text
     assert "whiteboard wall" in text
     assert "turn messy help-center data into an engineering plan" in text
     assert "Keep player-created quest files in analysis/" in text
     assert "artifact I need from Ari is analysis/quest_01_implementation_spec.md" in text
+    assert "Achievement unlocked: Product Hunch" in text

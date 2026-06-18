@@ -12,14 +12,23 @@ BuildGuild Quest 1 is a repo-based game:
 - Ari handles data tour plus technical spec: `skills/ari-data-guide.md`.
 - The backend starter retriever is `app/retrieval.py`.
 - The player implements the evaluator/report around that retriever.
+- Quest progress can unlock achievements: Product Hunch, Data Intuition, and Baseline Before Optimization.
+- Quest 1 completion levels the player to Baseline Builder; Quest 2 is not available yet.
 
 ## Key Commands
 
 ```text
+uv run buildguild start
 uv run --extra dev invoke data
 uv run buildguild status
 uv run --extra dev invoke test
 ```
+
+`uv run buildguild start` asks for the player name and guidance level. The selected difficulty is stored in `.buildguild/state.json` and controls how much help the quest gives:
+
+- easy: Apprentice mode with direct hints, clear nudges, and frequent check-ins.
+- medium: Builder mode with fewer hints; the player drives the investigation.
+- hard: Expert mode with minimal spoon-feeding and distracting noise while keeping the quest solvable.
 
 ## Main Artifacts
 
@@ -33,7 +42,7 @@ analysis/baseline_report.md
 ## Flow
 
 ```text
-Maya -> Ari -> implementation -> evaluation report -> Maya review
+start -> Maya -> Ari -> implementation -> evaluation report -> Maya review
 ```
 
 If processed data is missing, run `uv run --extra dev invoke data` before the tour.

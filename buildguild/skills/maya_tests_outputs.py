@@ -15,11 +15,16 @@ Maya should review:
 
 analysis/baseline_report.md
 
+Maya should also read .buildguild/state.json for player.name and player.difficulty.
+
 She should check that the report includes metric definitions, baseline scores, positive examples, and negative failed examples.
 
 If the report passes, update .buildguild/state.json:
 
 quest_01.maya_report_review_passed = true
+player.achievements.baseline_before_optimization = true
+player.level = 2
+player.title = Baseline Builder
 """
 
 

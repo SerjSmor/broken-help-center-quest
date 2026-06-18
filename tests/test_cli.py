@@ -11,7 +11,7 @@ def test_cli_status_runs(tmp_path, monkeypatch):
 
     assert result.exit_code == 0
     assert "BuildGuild Status" in result.output
-    assert "skills/maya-product-lead.md" in result.output
+    assert "uv run buildguild start" in result.output
 
 
 def test_cli_rejects_unknown_skill():
@@ -51,3 +51,31 @@ def test_cli_status_renders_checkbox_markers(tmp_path, monkeypatch):
 
     assert result.exit_code == 0
     assert "[ ] Product onboarding completed" in result.output
+
+
+def test_cli_banner_prints_opening_screen():
+    runner = CliRunner()
+
+    result = runner.invoke(app, ["banner"])
+
+    assert result.exit_code == 0
+    assert "B U I L D   G U I L D" in result.output
+    assert "QUEST I: THE BROKEN HELP CENTER" in result.output
+    assert "> run start" in result.output
+
+
+def test_cli_start_saves_name_and_difficulty(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    runner = CliRunner()
+
+    result = runner.invoke(app, ["start", "--name", "Serj", "--difficulty", "hard"])
+
+    assert result.exit_code == 0
+    assert "Quest setup complete: Serj chose hard difficulty." in result.output
+
+    status = runner.invoke(app, ["status"])
+
+    assert status.exit_code == 0
+    assert "Name: Serj" in status.output
+    assert "Difficulty: hard" in status.output
+    assert "skills/maya-product-lead.md" in status.output

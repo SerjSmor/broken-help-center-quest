@@ -4,6 +4,7 @@ from typing import Annotated
 
 import typer
 
+from buildguild.start import DIFFICULTIES, configure_player, print_difficulty_intro
 from buildguild.status import print_status
 
 
@@ -13,9 +14,41 @@ app.add_typer(run_app, name="run")
 
 
 @app.command()
+def start(
+    name: Annotated[str | None, typer.Option("--name", help="Player name.")] = None,
+    difficulty: Annotated[
+        str | None,
+        typer.Option("--difficulty", help="Quest difficulty: easy, medium, or hard."),
+    ] = None,
+) -> None:
+    """Start Quest 1 by choosing a player name and difficulty."""
+    print_difficulty_intro()
+    chosen_name = name or typer.prompt("Name")
+    chosen_difficulty = difficulty or typer.prompt("Difficulty", default="easy")
+    if chosen_difficulty.strip().lower() not in DIFFICULTIES:
+        allowed = ", ".join(DIFFICULTIES)
+        raise typer.BadParameter(f"Choose one of: {allowed}", param_hint="--difficulty")
+
+    state = configure_player(name=chosen_name, difficulty=chosen_difficulty)
+    player = state["player"]
+    typer.echo(
+        f"Quest setup complete: {player['name']} chose {player['difficulty']} difficulty."
+    )
+    typer.echo("Next: uv run buildguild status")
+
+
+@app.command()
 def status() -> None:
     """Show the current quest stage and next action."""
     print_status()
+
+
+@app.command()
+def banner() -> None:
+    """Show the Quest 1 opening screen."""
+    from buildguild.banner import print_banner
+
+    print_banner()
 
 
 @run_app.command("skill")

@@ -1,224 +1,74 @@
-# BuildGuild: Broken Help Center
+# BuildGuild: The Broken Help Center
 
-Welcome to BuildGuild, a repo-based learning game where you build AI products by working through messy product requests, engineering tradeoffs, and validation gates.
-
-You are the engineer on Quest 1.
-
-The fictional company has a help-center bot. It answers questions, sort of. Nobody knows if it retrieves the right articles, whether the answers are useful, or where it fails.
-
-Quest 1 uses the WixQA benchmark from Hugging Face as the task dataset. The company is fictional, but the knowledge base and evaluation data are WixQA-derived because they provide a realistic website-builder support corpus without exposing proprietary production data.
-
-Your mission:
+![Broken Help Center](assets/broken_help_center.png)
 
 ```text
-Create the first measurable baseline.
+╔══════════════════════════════════════════════════════════════╗
+║✦        .          *        ✧          .          ✦          ║
+║        SYS: MEMORY FAULT     IDX: ? ? ?                      ║
+║    /\/\        [404] HELP CENTER        /\/\                 ║
+║ ~~~~~~~~~       corrupted index       ~~~~~~~~~              ║
+║        ⚠ retrieval signal unstable ⚠                         ║
+║                                                              ║
+║      ██████╗ ██╗   ██╗██╗██╗     ██████╗                     ║
+║      ██╔══██╗██║   ██║██║██║     ██╔══██╗                    ║
+║      ██████╔╝██║   ██║██║██║     ██║  ██║                    ║
+║      ██╔══██╗██║   ██║██║██║     ██║  ██║                    ║
+║      ██████╔╝╚██████╔╝██║███████╗██████╔╝                    ║
+║      ╚═════╝  ╚═════╝ ╚═╝╚══════╝╚═════╝                     ║
+║                                                              ║
+║                  B U I L D   G U I L D                       ║
+║                                                              ║
+║      ╔════════════════════════════════════════════╗          ║
+║      ║QUEST I: THE BROKEN HELP CENTER             ║          ║
+║      ║                                            ║          ║
+║      ║The support bot has lost its memory.        ║          ║
+║      ║The docs are noisy. Retrieval is cursed.    ║          ║
+║      ║                                            ║          ║
+║      ║Objective: Measure the baseline retriever.  ║          ║
+║      ╚════════════════════════════════════════════╝          ║
+║                                                              ║
+║      > run start                                             ║
+║      > choose name + difficulty                              ║
+║      > mentor: Maya waits beyond setup_                      ║
+║                                                              ║
+║      cache: cold     corpus: awake     ranker: ???           ║
+║✧       .        ✦      NULL      ???       ✦        .        ║
+╚══════════════════════════════════════════════════════════════╝
 ```
 
-No agents. No fancy reranking. No dashboard. First, prove what the bot can and cannot do today.
+The help-center bot works. Probably.
 
-## Install
+Nobody knows whether it finds the right articles, where it fails, or whether the team should trust it. Your quest is to turn the cursed vibes into a measurable baseline.
 
-This project uses Python and Invoke tasks.
+No fancy agents. No dashboards. No optimization yet. First, prove what the current retriever can and cannot do.
 
-From the repo root:
+## Start
+
+Open this repo in your favorite coding agent: Codex, Claude Code, or OpenCode.
+
+Ask your coding agent:
 
 ```text
-uv run --extra dev invoke data
-uv run --extra dev buildguild status
+Start the BuildGuild game.
 ```
 
-This is the recommended path for a fresh checkout. `uv` creates and manages the project environment, includes the development dependencies, and runs the command without requiring a separate install step.
+The game will ask your name and guidance level:
 
-Optional: install the local CLI into the project environment if you want shorter commands while working repeatedly:
+- `easy`: Apprentice mode with hints and check-ins.
+- `medium`: Builder mode with fewer hints.
+- `hard`: Expert mode with minimal spoon-feeding and distracting noise.
 
-```text
-uv run --extra dev invoke install
-uv run buildguild status
-```
+## Play
 
-The bare command `buildguild ...` only works if the project environment is installed and its `bin` directory is on your shell `PATH`, for example after activating `.venv`. When in doubt, use `uv run buildguild ...`.
+Along the way you will meet Maya, a product manager with sharp product instincts but shaky data intuition, and Ari, your builder buddy for turning messy evidence into a plan.
 
-## Start Quest 1
+Talk to the characters, inspect the data, build the baseline, and bring the report back for review.
 
-Open Codex, Claude Code, or OpenCode in this repo and ask it:
+Your quest artifacts live in `analysis/`.
 
-```text
-Use skills/maya-product-lead.md to role-play Maya and run Quest 1 product discovery with me.
-```
+## Win Condition
 
-No terminal command is needed to start the Maya conversation. The agent should read the markdown skill file and role-play Maya directly. This avoids environment setup, `uv`, and cache permissions during product discovery.
+You win by producing a baseline report with metrics, positive examples, and failed examples that make the broken help center understandable.
 
-You will meet Maya, the product lead, in the SiteForge product room. Ask questions until you understand what she actually needs.
-
-She will welcome you to SiteForge, ask your name because she is bad at names, and explain that you have been assigned the most important task on her board. She knows the customer pain, but she is bad at data, so you need to lead by asking the right questions.
-
-Maya will not write the ticket for you.
-
-Maya tracks discovery with four hidden checkboxes:
-
-```text
-Discovery checklist:
-- [ ] ???
-- [ ] ???
-- [ ] ???
-- [ ] ???
-```
-
-Ask the right product questions to uncover each area. When you ask a useful question, Maya reveals and checks the matching box.
-
-You can ask Maya for a tip. Tips should nudge you without revealing the answer.
-
-Once all four are checked, the agent should create:
-
-```text
-analysis/quest_01_product_requirements.md
-```
-
-Then the agent should update `.buildguild/state.json` and set `quest_01.product_onboarding_completed` to `true`.
-
-## Tour The Data And Write The Spec
-
-Before implementing retrieval or evaluation, ask your coding agent to become Ari, the EDA guide:
-
-```text
-Use skills/ari-data-guide.md to tour the data and write the Quest 1 technical spec with me.
-```
-
-Ari should inspect the dataset, explain the scripts and checks behind the findings, and write those findings directly into the technical spec. If you choose Streamlit, Ari should build that EDA app with you section by section.
-
-Create:
-
-```text
-analysis/quest_01_implementation_spec.md
-```
-
-The spec should include a `## Data Tour Findings` section.
-
-Then Ari should update `.buildguild/state.json`:
-
-```json
-{
-  "quest_01": {
-    "implementation_spec_completed": true
-  }
-}
-```
-
-This technical spec is the implementation ticket. There is no separate ticket-review step.
-
-## Your Quest Loop
-
-Use status whenever you are unsure what to do next:
-
-```text
-uv run buildguild status
-```
-
-If you are using an agent, you can also use the repo-local slash command:
-
-```text
-/quest-status
-```
-
-The shared status skill is:
-
-```text
-skills/quest-status.md
-```
-
-Claude Code and Codex slash-command wrappers point to that same skill:
-
-```text
-.claude/commands/quest-status.md
-.codex/commands/quest-status.md
-```
-
-Claude Code can also show the current quest stage in its status line. This repo includes:
-
-```text
-.claude/settings.json
-tools/quest_statusline.py
-```
-
-If Claude Code does not pick it up automatically, run `/statusline` inside Claude Code and set the command to:
-
-```text
-python3 tools/quest_statusline.py
-```
-
-The status line is intentionally read-only and does not run `uv`; it reads `.buildguild/state.json` and checks the expected quest files directly.
-
-To restart Quest 1 from the beginning, ask your coding agent:
-
-```text
-Use skills/restart-game.md to reset Quest 1.
-```
-
-The restart flow requires an exact confirmation phrase and then runs `scripts/restart_quest.py`.
-
-The flow is:
-
-```text
-check status
-talk to Maya
-generate product requirements
-tour the data and write the technical spec with Ari
-build the baseline RAG
-run the evaluation
-ask Maya to review the report
-validate the quest
-```
-
-## What You Will Build
-
-The backend team already wrote a simple lexical retriever in:
-
-```text
-app/retrieval.py
-```
-
-Nobody knows how well it performs. Quest 1 evaluates that existing baseline over the WixQA-derived benchmark:
-
-- Existing lexical retrieval baseline.
-- `python analysis/ask.py "How do I connect a domain?"`
-- `python analysis/run_baseline.py`
-- `analysis/baseline_report.md`
-
-The important score is retrieval quality: did the backend retriever include the expected WixQA source article in the top 5 results for each expert-written question?
-
-The report should include metric definitions, baseline scores, positive examples, and negative failed examples.
-
-After the report exists, ask your coding agent:
-
-```text
-Use skills/maya-tests-outputs.md so Maya can review analysis/baseline_report.md.
-```
-
-If Maya accepts the report, Quest 1 is complete.
-
-## Development
-
-Run tests:
-
-```text
-uv run --extra dev invoke test
-```
-
-Prepare the WixQA-derived benchmark from Hugging Face:
-
-```text
-uv run --extra dev invoke data
-```
-
-## Current State
-
-This repo currently contains the early playable skeleton:
-
-- Quest status.
-- WixQA dataset preparation through Hugging Face `datasets`.
-- Maya persona skill for agent-mediated conversation.
-- Maya report-review skill.
-- CLI routing.
-- Tests for the implemented pieces.
-
-Ticket review and final RAG validation are intentionally stubbed for upcoming phases.
+Quest 2 is not available yet. Star this repo to get an update when the next quest opens.

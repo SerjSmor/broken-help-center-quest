@@ -10,6 +10,19 @@ DEFAULT_STATE: dict[str, Any] = {
         "product_onboarding_completed": False,
         "implementation_spec_completed": False,
         "maya_report_review_passed": False,
+    },
+    "player": {
+        "name": None,
+        "difficulty": "easy",
+        "setup_completed": False,
+        "level": 1,
+        "title": "New Builder",
+        "xp": 0,
+        "achievements": {
+            "product_hunch": False,
+            "data_intuition": False,
+            "baseline_before_optimization": False,
+        },
     }
 }
 
@@ -42,11 +55,31 @@ def update_quest_state(quest_key: str, updates: dict[str, Any], path: Path = STA
     return state
 
 
+def update_player_state(updates: dict[str, Any], path: Path = STATE_PATH) -> dict[str, Any]:
+    state = load_state(path)
+    player_state = state.setdefault("player", {})
+    for key, value in updates.items():
+        if isinstance(value, dict) and isinstance(player_state.get(key), dict):
+            player_state[key].update(value)
+        else:
+            player_state[key] = value
+    save_state(state, path)
+    return state
+
+
 def _with_defaults(data: dict[str, Any]) -> dict[str, Any]:
     state = json.loads(json.dumps(DEFAULT_STATE))
     for key, value in data.items():
         if isinstance(value, dict) and isinstance(state.get(key), dict):
-            state[key].update(value)
+            _deep_update(state[key], value)
         else:
             state[key] = value
     return state
+
+
+def _deep_update(target: dict[str, Any], updates: dict[str, Any]) -> None:
+    for key, value in updates.items():
+        if isinstance(value, dict) and isinstance(target.get(key), dict):
+            _deep_update(target[key], value)
+        else:
+            target[key] = value

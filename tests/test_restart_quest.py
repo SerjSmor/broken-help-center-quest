@@ -27,6 +27,19 @@ def test_restart_quest_removes_outputs_and_resets_state(tmp_path):
                     "product_onboarding_completed": True,
                     "implementation_spec_completed": True,
                     "maya_report_review_passed": True,
+                },
+                "player": {
+                    "name": "Serj",
+                    "difficulty": "hard",
+                    "setup_completed": True,
+                    "level": 2,
+                    "title": "Baseline Builder",
+                    "xp": 500,
+                    "achievements": {
+                        "product_hunch": True,
+                        "data_intuition": True,
+                        "baseline_before_optimization": True,
+                    },
                 }
             }
         ),
@@ -45,6 +58,19 @@ def test_restart_quest_removes_outputs_and_resets_state(tmp_path):
             "product_onboarding_completed": False,
             "implementation_spec_completed": False,
             "maya_report_review_passed": False,
+        },
+        "player": {
+            "name": None,
+            "difficulty": "easy",
+            "setup_completed": False,
+            "level": 1,
+            "title": "New Builder",
+            "xp": 0,
+            "achievements": {
+                "product_hunch": False,
+                "data_intuition": False,
+                "baseline_before_optimization": False,
+            },
         }
     }
 
