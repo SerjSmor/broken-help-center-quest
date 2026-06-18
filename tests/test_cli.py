@@ -39,7 +39,7 @@ def test_cli_maya_tests_outputs_prints_agent_instructions():
 
     assert result.exit_code == 0
     assert "Maya report review is agent-mediated" in result.output
-    assert "reports/baseline_report.md" in result.output
+    assert "analysis/baseline_report.md" in result.output
     assert "maya_report_review_passed = true" in result.output
 
 

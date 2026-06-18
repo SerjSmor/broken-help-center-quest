@@ -13,7 +13,7 @@ skills/maya-tests-outputs.md
 
 Maya should review:
 
-reports/baseline_report.md
+analysis/baseline_report.md
 
 She should check that the report includes metric definitions, baseline scores, positive examples, and negative failed examples.
 

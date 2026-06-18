@@ -71,63 +71,37 @@ You can ask Maya for a tip. Tips should nudge you without revealing the answer.
 Once all four are checked, the agent should create:
 
 ```text
-requirements/quest_01_product_requirements.md
+analysis/quest_01_product_requirements.md
 ```
 
 Then the agent should update `.buildguild/state.json` and set `quest_01.product_onboarding_completed` to `true`.
 
-## Tour The Data
+## Tour The Data And Write The Spec
 
 Before implementing retrieval or evaluation, ask your coding agent to become Ari, the EDA guide:
 
 ```text
-Use skills/ari-data-guide.md to tour the data with me.
+Use skills/ari-data-guide.md to tour the data and write the Quest 1 technical spec with me.
 ```
 
-Ari is the coding agent in EDA mode. Ari should inspect the dataset, explain the scripts and checks behind the findings, and help you understand what the baseline can rely on.
+Ari should inspect the dataset, explain the scripts and checks behind the findings, and write those findings directly into the technical spec. If you choose Streamlit, Ari should build that EDA app with you section by section.
 
-If you want the visual companion app during the tour, run:
+Create:
 
 ```text
-uv run --extra dev invoke tour
+analysis/quest_01_implementation_spec.md
 ```
 
-The Streamlit app shows:
-
-- Help-center articles.
-- Evaluation questions.
-- Expected answer terms.
-- Expected help article sources and content.
-- A few guided question-to-document examples.
-
-Ari should create:
-
-```text
-notes/quest_01_data_tour.md
-```
+The spec should include a `## Data Tour Findings` section.
 
 Then Ari should update `.buildguild/state.json`:
 
 ```json
 {
   "quest_01": {
-    "data_tour_completed": true
+    "implementation_spec_completed": true
   }
 }
-```
-
-## Write The Technical Spec
-
-After product requirements and Ari's data tour, ask your coding agent:
-
-```text
-Use skills/write-technical-spec.md to help me write the Quest 1 technical spec.
-```
-
-Create:
-
-```text
-specs/quest_01_implementation_spec.md
 ```
 
 This technical spec is the implementation ticket. There is no separate ticket-review step.
@@ -174,14 +148,21 @@ python3 tools/quest_statusline.py
 
 The status line is intentionally read-only and does not run `uv`; it reads `.buildguild/state.json` and checks the expected quest files directly.
 
+To restart Quest 1 from the beginning, ask your coding agent:
+
+```text
+Use skills/restart-game.md to reset Quest 1.
+```
+
+The restart flow requires an exact confirmation phrase and then runs `scripts/restart_quest.py`.
+
 The flow is:
 
 ```text
 check status
 talk to Maya
 generate product requirements
-tour the data with Ari
-write the technical spec
+tour the data and write the technical spec with Ari
 build the baseline RAG
 run the evaluation
 ask Maya to review the report
@@ -199,19 +180,18 @@ app/retrieval.py
 Nobody knows how well it performs. Quest 1 evaluates that existing baseline over the WixQA-derived benchmark:
 
 - Existing lexical retrieval baseline.
-- Baseline answer generation.
-- `python -m app.ask "How do I connect a domain?"`
-- `python -m evals.run_baseline`
-- `reports/baseline_report.md`
+- `python analysis/ask.py "How do I connect a domain?"`
+- `python analysis/run_baseline.py`
+- `analysis/baseline_report.md`
 
-The most important score is retrieval quality: did the backend retriever include the expected WixQA source article in the top 5 results? The generated-answer checks are intentionally simple for Quest 1: compare the answer against reference-answer terms, measure answer length, and report concrete positive and negative examples.
+The important score is retrieval quality: did the backend retriever include the expected WixQA source article in the top 5 results for each expert-written question?
 
 The report should include metric definitions, baseline scores, positive examples, and negative failed examples.
 
 After the report exists, ask your coding agent:
 
 ```text
-Use skills/maya-tests-outputs.md so Maya can review reports/baseline_report.md.
+Use skills/maya-tests-outputs.md so Maya can review analysis/baseline_report.md.
 ```
 
 If Maya accepts the report, Quest 1 is complete.

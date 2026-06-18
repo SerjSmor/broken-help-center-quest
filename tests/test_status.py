@@ -11,7 +11,7 @@ def test_fresh_status_points_to_onboarding(tmp_path, monkeypatch):
 
     assert status.stage == "Product discovery"
     assert "skills/maya-product-lead.md" in status.next_action
-    assert "requirements/quest_01_product_requirements.md" in status.next_action
+    assert "analysis/quest_01_product_requirements.md" in status.next_action
 
 
 def test_status_after_onboarding_without_requirements_stays_in_discovery(tmp_path, monkeypatch):
@@ -31,69 +31,43 @@ def test_status_after_onboarding_without_requirements_stays_in_discovery(tmp_pat
     assert "Product requirements found" in status.missing
 
 
-def test_status_after_onboarding_and_requirements_points_to_data_tour(tmp_path, monkeypatch):
+def test_status_after_onboarding_and_requirements_points_to_ari_spec(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     save_state(
         {
             "quest_01": {
                 "product_onboarding_completed": True,
-                "data_tour_completed": False,
                 "implementation_spec_completed": False,
             }
         }
     )
-    Path("requirements").mkdir()
-    Path("requirements/quest_01_product_requirements.md").write_text("# Product Requirements\n")
+    write_file("analysis/quest_01_product_requirements.md", "# Product Requirements\n")
 
     status = inspect_status()
 
-    assert status.stage == "Tour the data"
+    assert status.stage == "Tour data and write implementation spec"
     assert "skills/ari-data-guide.md" in status.next_action
-    assert "notes/quest_01_data_tour.md" in status.next_action
-    assert "data_tour_completed = true" in status.next_action
+    assert "analysis/quest_01_implementation_spec.md" in status.next_action
+    assert "Data Tour Findings" in status.next_action
 
 
-def test_status_after_state_only_stays_on_data_tour_until_notes_exist(tmp_path, monkeypatch):
+def test_status_after_spec_file_without_state_stays_on_ari_spec(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     save_state(
         {
             "quest_01": {
                 "product_onboarding_completed": True,
-                "data_tour_completed": True,
                 "implementation_spec_completed": False,
             }
         }
     )
-    Path("requirements").mkdir()
-    Path("requirements/quest_01_product_requirements.md").write_text("# Product Requirements\n")
+    write_file("analysis/quest_01_product_requirements.md", "# Product Requirements\n")
+    write_file("analysis/quest_01_implementation_spec.md", "# Technical Spec\n")
 
     status = inspect_status()
 
-    assert status.stage == "Tour the data"
-    assert "Data tour notes found" in status.missing
-
-
-def test_status_after_data_tour_points_to_implementation_spec(tmp_path, monkeypatch):
-    monkeypatch.chdir(tmp_path)
-    save_state(
-        {
-            "quest_01": {
-                "product_onboarding_completed": True,
-                "data_tour_completed": True,
-                "implementation_spec_completed": False,
-            }
-        }
-    )
-    Path("requirements").mkdir()
-    Path("requirements/quest_01_product_requirements.md").write_text("# Product Requirements\n")
-    Path("notes").mkdir()
-    Path("notes/quest_01_data_tour.md").write_text("# Data Tour Notes\n")
-
-    status = inspect_status()
-
-    assert status.stage == "Write implementation spec"
-    assert "skills/write-technical-spec.md" in status.next_action
-    assert "specs/quest_01_implementation_spec.md" in status.next_action
+    assert status.stage == "Tour data and write implementation spec"
+    assert "Implementation spec completed" in status.missing
 
 
 def test_status_after_implementation_spec_points_to_implementation(tmp_path, monkeypatch):
@@ -102,22 +76,17 @@ def test_status_after_implementation_spec_points_to_implementation(tmp_path, mon
         {
             "quest_01": {
                 "product_onboarding_completed": True,
-                "data_tour_completed": True,
                 "implementation_spec_completed": True,
             }
         }
     )
-    Path("requirements").mkdir()
-    Path("requirements/quest_01_product_requirements.md").write_text("# Product Requirements\n")
-    Path("notes").mkdir()
-    Path("notes/quest_01_data_tour.md").write_text("# Data Tour Notes\n")
-    Path("specs").mkdir()
-    Path("specs/quest_01_implementation_spec.md").write_text("# Technical Spec\n")
+    write_file("analysis/quest_01_product_requirements.md", "# Product Requirements\n")
+    write_file("analysis/quest_01_implementation_spec.md", "# Technical Spec\n")
 
     status = inspect_status()
 
     assert status.stage == "Implement baseline evaluation"
-    assert "python -m app.ask" in status.next_action
+    assert "python analysis/ask.py" in status.next_action
 
 
 def test_status_after_report_points_to_maya_review(tmp_path, monkeypatch):
@@ -126,26 +95,17 @@ def test_status_after_report_points_to_maya_review(tmp_path, monkeypatch):
         {
             "quest_01": {
                 "product_onboarding_completed": True,
-                "data_tour_completed": True,
                 "implementation_spec_completed": True,
                 "maya_report_review_passed": False,
             }
         }
     )
-    Path("requirements").mkdir()
-    Path("requirements/quest_01_product_requirements.md").write_text("# Product Requirements\n")
-    Path("notes").mkdir()
-    Path("notes/quest_01_data_tour.md").write_text("# Data Tour Notes\n")
-    Path("specs").mkdir()
-    Path("specs/quest_01_implementation_spec.md").write_text("# Technical Spec\n")
-    Path("app").mkdir()
-    for filename in ("ask.py", "rag.py", "retrieval.py"):
-        Path("app", filename).write_text("")
-    Path("evals").mkdir()
-    for filename in ("run_baseline.py", "metrics.py"):
-        Path("evals", filename).write_text("")
-    Path("reports").mkdir()
-    Path("reports/baseline_report.md").write_text("# Baseline Report\n")
+    write_file("analysis/quest_01_product_requirements.md", "# Product Requirements\n")
+    write_file("analysis/quest_01_implementation_spec.md", "# Technical Spec\n")
+    write_file("app/retrieval.py", "")
+    for path in ("analysis/ask.py", "analysis/rag.py", "analysis/run_baseline.py", "analysis/metrics.py"):
+        write_file(path, "")
+    write_file("analysis/baseline_report.md", "# Baseline Report\n")
 
     status = inspect_status()
 
@@ -159,28 +119,25 @@ def test_status_after_maya_review_is_complete(tmp_path, monkeypatch):
         {
             "quest_01": {
                 "product_onboarding_completed": True,
-                "data_tour_completed": True,
                 "implementation_spec_completed": True,
                 "maya_report_review_passed": True,
             }
         }
     )
-    Path("requirements").mkdir()
-    Path("requirements/quest_01_product_requirements.md").write_text("# Product Requirements\n")
-    Path("notes").mkdir()
-    Path("notes/quest_01_data_tour.md").write_text("# Data Tour Notes\n")
-    Path("specs").mkdir()
-    Path("specs/quest_01_implementation_spec.md").write_text("# Technical Spec\n")
-    Path("app").mkdir()
-    for filename in ("ask.py", "rag.py", "retrieval.py"):
-        Path("app", filename).write_text("")
-    Path("evals").mkdir()
-    for filename in ("run_baseline.py", "metrics.py"):
-        Path("evals", filename).write_text("")
-    Path("reports").mkdir()
-    Path("reports/baseline_report.md").write_text("# Baseline Report\n")
+    write_file("analysis/quest_01_product_requirements.md", "# Product Requirements\n")
+    write_file("analysis/quest_01_implementation_spec.md", "# Technical Spec\n")
+    write_file("app/retrieval.py", "")
+    for path in ("analysis/ask.py", "analysis/rag.py", "analysis/run_baseline.py", "analysis/metrics.py"):
+        write_file(path, "")
+    write_file("analysis/baseline_report.md", "# Baseline Report\n")
 
     status = inspect_status()
 
     assert status.stage == "Quest complete"
     assert "Quest 1 complete" in status.next_action
+
+
+def write_file(relative_path: str, text: str) -> None:
+    path = Path(relative_path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(text)

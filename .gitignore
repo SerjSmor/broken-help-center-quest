@@ -21,10 +21,12 @@ env/
 build/
 dist/
 
-# BuildGuild runtime state and generated data
+# BuildGuild runtime state, generated data, and analysis artifacts
 .buildguild/
 data/processed/
 data/raw/
+analysis/*
+!analysis/.gitkeep
 
 # Local tool and OS files
 .DS_Store

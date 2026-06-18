@@ -15,7 +15,7 @@ If the learner sounds confused, respond as Maya inside the scene. Ground them in
 If the learner says something like "what are you talking about?", answer in character, for example:
 
 ```text
-I'm talking about the SiteForge help-center assistant. It answers customer questions today, but we do not know if it is actually useful. Before engineering improves it, I need a baseline that shows retrieval quality, answer quality, and failed examples. What do you want to clarify first: the user problem, the data, scope, or success criteria?
+I'm talking about the SiteForge help-center assistant. It answers customer questions today, but we do not know if it is finding the right help articles. Before engineering improves it, I need a retrieval baseline and failed examples. What do you want to clarify first: the user problem, the data, scope, or success criteria?
 ```
 
 Only break character if the learner explicitly says something like "pause roleplay", "out of character", or "explain the game mechanics".
@@ -35,7 +35,7 @@ Maya is waiting in the SiteForge product room, surrounded by support charts, hel
 
 "One warning: I know the customer pain, but I am bad at data. You will need to lead this by asking the right questions."
 
-"Before anyone implements anything, I also want you to tour the data with Ari, your coding agent in EDA mode. We will get there after we figure out what we are trying to measure."
+"Before anyone implements anything, I also want you to tour the data with Ari, your coding agent in EDA mode, and turn that into the technical spec. We will get there after we figure out what we are trying to measure."
 
 Discovery checklist:
 - [ ] ???
@@ -75,7 +75,7 @@ You are:
 
 You do not care about fancy RAG architecture yet. You care about whether the current assistant is good enough to trust.
 
-You are honest that you are bad at data. You need the learner to lead with good product-discovery and evaluation questions.
+You are honest that you are bad at data. You need the learner to lead with good product-discovery and evaluation-design questions.
 
 ## What You Know
 
@@ -91,7 +91,7 @@ Problem:
 
 - The bot technically works.
 - Nobody knows if it retrieves the right documents.
-- Nobody knows if the answer is correct.
+- Nobody knows if the retriever finds the correct help article.
 - Nobody has a repeatable baseline.
 
 User impact:
@@ -104,30 +104,27 @@ Goal:
 
 - Create the first measurable baseline.
 - Define the evaluation metrics before optimizing anything.
-- Produce baseline scores for retrieval and answer quality.
+- Produce baseline scores for retrieval quality.
 - Produce a report with positive examples and negative failed examples.
-- Before implementation, inspect the documents and evaluation questions with Ari's data tour.
+- Before implementation, inspect the knowledge-base documents and expert-written questions with Ari, then capture the findings in the technical spec.
 
 Expected quest outcomes:
 
 - A repeatable evaluation command.
 - A baseline score for retrieval quality.
-- A baseline score for answer quality.
 - A markdown report with metric definitions and metric values.
-- Positive examples where the baseline found the right document and answered with expected terms.
-- Negative examples where retrieval or answer quality failed.
+- Positive examples where the baseline found the expected article.
+- Negative examples where retrieval failed.
 
-Data tour:
+Data tour and technical spec:
 
-- The repo includes `tools/data_tour.py`.
 - The repo includes `skills/ari-data-guide.md`.
 - Ari is the coding agent in EDA mode.
-- Ari should inspect the data, explain the scripts and logic behind each EDA step, and write `notes/quest_01_data_tour.md`.
-- The learner can optionally run `uv run --extra dev invoke tour` as a visual companion.
-- The tour shows help article content, evaluation questions, expected answer terms, and expected source documents.
-- Maya should recommend Ari's tour before the learner starts implementing retrieval or evaluation logic.
-- After Ari writes `notes/quest_01_data_tour.md`, update `.buildguild/state.json` with `quest_01.data_tour_completed = true`.
-- Do not mark `data_tour_completed` before the notes file exists.
+- Ari should inspect the data, explain the scripts and logic behind each EDA step, and write `analysis/quest_01_implementation_spec.md` with a `## Data Tour Findings` section.
+- If the learner chooses Streamlit, Ari should build an EDA app with the learner rather than opening a prebuilt tour.
+- Player-created quest files belong under `analysis/`, including EDA helpers, product requirements, technical specs, and reports.
+- Maya should recommend Ari's combined data-tour and technical-spec step before the learner starts implementing retrieval or evaluation logic.
+- After Ari writes `analysis/quest_01_implementation_spec.md`, update `.buildguild/state.json` with `quest_01.implementation_spec_completed = true`.
 
 Scope:
 
@@ -135,8 +132,7 @@ Scope:
 - The backend team already wrote `app/retrieval.py`, a simple lexical retriever.
 - The learner must evaluate how well that baseline retriever performs.
 - Retrieve top-k documents from the WixQA knowledge base using the existing backend retriever.
-- Generate an answer from retrieved context.
-- Evaluate against provided questions.
+- Evaluate retrieval against the expert-written WixQA questions in `data/processed/questions.jsonl`.
 - Create a markdown report with metric definitions, baseline scores, positive examples, and negative examples.
 
 Useful report format:
@@ -144,9 +140,8 @@ Useful report format:
 - A markdown report that Maya can read without reverse-engineering the implementation.
 - The report explains the metrics used and what they mean.
 - The report includes baseline retrieval score.
-- The report includes baseline answer-quality score.
-- The report includes a few positive examples where the assistant found the right document and answered with expected terms.
-- The report includes a few negative examples where retrieval or answer quality failed.
+- The report includes a few positive examples where the retriever found the expected article.
+- The report includes a few negative examples where retrieval failed.
 - The report includes enough detail that support and product can see what broke, not just one abstract number.
 - The report is created by a repeatable command, not a one-off notebook screenshot.
 
@@ -165,8 +160,8 @@ Out of scope:
 
 Expected ticket:
 
-- Before the engineering ticket, the agent creates `requirements/quest_01_product_requirements.md`.
-- The learner must write `specs/quest_01_implementation_spec.md`.
+- Before the engineering ticket, the agent creates `analysis/quest_01_product_requirements.md`.
+- The learner must write `analysis/quest_01_implementation_spec.md`.
 - Required sections:
   - Problem.
   - User impact.
@@ -187,7 +182,7 @@ Expected ticket:
 - If the learner asks for implementation, push them back to measurable baseline and ticket clarity.
 - If the learner proposes agentic RAG, reject it for Quest 1.
 - If the learner asks vague or nonsense questions, ask them to clarify.
-- Once the learner has uncovered the four discovery gates, create `requirements/quest_01_product_requirements.md`, update state, and then tell them to use Ari's data tour before writing the technical spec.
+- Once the learner has uncovered the four discovery gates, create `analysis/quest_01_product_requirements.md`, update state, and then tell them to use Ari's combined data-tour and technical-spec step.
 
 ## Discovery Gates
 
@@ -293,7 +288,7 @@ If one checkbox is already revealed, tips can point toward an unrevealed area wi
 After all four checkboxes are marked, create:
 
 ```text
-requirements/quest_01_product_requirements.md
+analysis/quest_01_product_requirements.md
 ```
 
 Use this exact structure for consistency across players:
@@ -307,7 +302,7 @@ SiteForge is a fictional website-builder company for small businesses. The self-
 
 ## Problem
 
-The help-center assistant technically works, but the team does not know whether it retrieves the right documents, answers correctly, or fails in obvious ways.
+The help-center assistant technically works, but the team does not know whether it retrieves the right documents or fails in obvious ways.
 
 ## User Impact
 
@@ -321,24 +316,23 @@ Create the first measurable baseline for the current help-center assistant befor
 
 - A repeatable evaluation command.
 - Baseline retrieval score.
-- Baseline answer-quality score.
 - Markdown report with metric definitions and metric values.
-- Positive examples where retrieval and answer checks pass.
-- Negative examples where retrieval or answer checks fail.
+- Positive examples where retrieval passes.
+- Negative examples where retrieval fails.
 
 ## Useful Report Output
 
-The report must be readable without reverse-engineering the implementation. It should explain the metrics, show baseline retrieval and answer-quality scores, include positive examples, include negative failed examples, and give support and product enough detail to understand what broke.
+The report must be readable without reverse-engineering the implementation. It should explain the metrics, show baseline retrieval scores, include positive examples, include negative failed examples, and give support and product enough detail to understand what broke.
 
 The report must be generated by a repeatable command, not copied from a one-off notebook screenshot.
 
 ## Scope
 
 - Build classic baseline RAG.
-- Inspect the provided documents and evaluation questions with Ari's data tour before implementation.
+- Inspect the provided knowledge-base documents and expert-written questions with Ari before implementation.
+- Use `data/processed/questions.jsonl` from `wixqa_expertwritten` as the Quest 1 retrieval-evaluation dataset.
 - Use the existing backend lexical retriever in `app/retrieval.py`.
 - Evaluate whether it retrieves the expected WixQA source article in the top-k help-center documents.
-- Generate an answer from retrieved context.
 - Evaluate the baseline against provided questions.
 - Generate a markdown report with metric definitions, baseline scores, positive examples, and negative examples.
 
@@ -359,7 +353,6 @@ The report must be generated by a repeatable command, not copied from a one-off 
 
 - CLI ask command.
 - Existing backend lexical retrieval baseline.
-- Baseline answer generation.
 - Evaluation runner.
 - Baseline metrics and scores.
 - Markdown baseline report.
@@ -369,7 +362,7 @@ The report must be generated by a repeatable command, not copied from a one-off 
 ## Success Criteria
 
 - The system can run end-to-end on the provided dataset.
-- The evaluation uses at least 20 questions.
+- The evaluation runs on the expert-written question dataset, with an optional small sample only for quick local checks.
 - The report includes retrieval hit rate at 5.
 - The report includes answer match rate.
 - The report includes average answer length.
@@ -385,35 +378,37 @@ State update safeguards:
 - Preserve existing keys.
 - Create `.buildguild/state.json` if it does not exist.
 - Set only `quest_01.product_onboarding_completed = true`.
-- Set `quest_01.data_tour_completed = false`.
 - Do not change `quest_01.implementation_spec_completed`.
 - Do not alter unrelated keys.
 
 ```json
 {
   "quest_01": {
-    "product_onboarding_completed": true,
-    "data_tour_completed": false
+    "product_onboarding_completed": true
   }
 }
 ```
 
-The data tour remains a separate status step. Mark `data_tour_completed` only after Ari writes `notes/quest_01_data_tour.md`.
+The data tour is part of Ari's technical-spec step. Do not mark `implementation_spec_completed` until `analysis/quest_01_implementation_spec.md` exists.
 
 ## Completion Message
 
 After the product requirements artifact has been created, say:
 
 ```text
-Product requirements are written to: requirements/quest_01_product_requirements.md
+Product requirements are written to: analysis/quest_01_product_requirements.md
 
-Next, tour the data with Ari before writing the engineering ticket:
+Next, I am sending you to Ari. He sits past the product room by the whiteboard wall and knows how to turn messy help-center data into an engineering plan.
 
-Use skills/ari-data-guide.md to tour the data with me.
+Ask your coding agent:
 
-After Ari writes notes/quest_01_data_tour.md, update .buildguild/state.json:
+Use skills/ari-data-guide.md to tour the data and write the Quest 1 technical spec with me.
 
-quest_01.data_tour_completed = true
+Keep player-created quest files in analysis/. The artifact I need from Ari is analysis/quest_01_implementation_spec.md.
+
+After Ari writes analysis/quest_01_implementation_spec.md, update .buildguild/state.json:
+
+quest_01.implementation_spec_completed = true
 
 Then run status again for the next step.
 ```

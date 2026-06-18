@@ -9,7 +9,7 @@ def install(ctx):
 
 @task
 def data(ctx):
-    """Prepare the WixQA-derived benchmark into data/processed."""
+    """Prepare the WixQA-derived benchmark into data/processed if missing."""
     ctx.run("python3 scripts/prepare_dataset.py")
 
 
@@ -17,9 +17,3 @@ def data(ctx):
 def test(ctx):
     """Run the automated test suite."""
     ctx.run("python3 -m pytest")
-
-
-@task
-def tour(ctx):
-    """Run the Streamlit data tour."""
-    ctx.run("python3 -m streamlit run tools/data_tour.py")

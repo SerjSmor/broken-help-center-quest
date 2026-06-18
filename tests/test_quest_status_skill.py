@@ -7,12 +7,11 @@ def test_shared_quest_status_skill_exists():
     assert "agent-agnostic" in text
     assert "uv run buildguild status" in text
     assert ".buildguild/state.json" in text
-    assert "requirements/quest_01_product_requirements.md" in text
-    assert "notes/quest_01_data_tour.md" in text
+    assert "analysis/quest_01_product_requirements.md" in text
     assert "skills/ari-data-guide.md" in text
-    assert "Streamlit is only the visual companion" in text
-    assert "specs/quest_01_implementation_spec.md" in text
-    assert "reports/baseline_report.md" in text
+    assert "Ari should build the EDA app with the player" in text
+    assert "analysis/quest_01_implementation_spec.md" in text
+    assert "analysis/baseline_report.md" in text
     assert "Maya report review" in text
 
 

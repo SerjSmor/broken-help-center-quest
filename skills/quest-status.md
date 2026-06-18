@@ -22,15 +22,14 @@ Read:
 
 Check whether these files exist:
 
-- `requirements/quest_01_product_requirements.md`
-- `notes/quest_01_data_tour.md`
-- `specs/quest_01_implementation_spec.md`
-- `reports/baseline_report.md`
-- `app/ask.py`
-- `app/rag.py`
+- `analysis/quest_01_product_requirements.md`
+- `analysis/quest_01_implementation_spec.md`
+- `analysis/baseline_report.md`
+- `analysis/ask.py`
+- `analysis/rag.py`
 - `app/retrieval.py`
-- `evals/run_baseline.py`
-- `evals/metrics.py`
+- `analysis/run_baseline.py`
+- `analysis/metrics.py`
 
 ## Stage Order
 
@@ -38,31 +37,27 @@ Report the first incomplete stage:
 
 1. Product discovery
    - Needs `quest_01.product_onboarding_completed = true`.
-   - Needs `requirements/quest_01_product_requirements.md`.
+   - Needs `analysis/quest_01_product_requirements.md`.
 
-2. Tour the data
-   - Needs `notes/quest_01_data_tour.md`.
-   - Needs `quest_01.data_tour_completed = true`.
-   - Next action: ask the coding agent to use `skills/ari-data-guide.md`; Streamlit is only the visual companion.
-
-3. Write implementation spec
-   - Needs `specs/quest_01_implementation_spec.md`.
+2. Tour data and write implementation spec
+   - Needs `analysis/quest_01_implementation_spec.md`.
    - Needs `quest_01.implementation_spec_completed = true`.
+   - Next action: ask the coding agent to use `skills/ari-data-guide.md`; if using Streamlit, Ari should build the EDA app with the player.
 
-4. Implement baseline evaluation
-   - Needs `app/ask.py`.
-   - Needs `app/rag.py`.
+3. Implement baseline evaluation
+   - Needs `analysis/ask.py`.
+   - Needs `analysis/rag.py`.
    - Needs `app/retrieval.py`.
-   - Needs `evals/run_baseline.py`.
-   - Needs `evals/metrics.py`.
+   - Needs `analysis/run_baseline.py`.
+   - Needs `analysis/metrics.py`.
 
-5. Run baseline evaluation
-   - Needs `reports/baseline_report.md`.
+4. Run baseline evaluation
+   - Needs `analysis/baseline_report.md`.
 
-6. Maya report review
+5. Maya report review
    - Needs `quest_01.maya_report_review_passed = true`.
 
-7. Quest complete
+6. Quest complete
 
 ## Response Format
 

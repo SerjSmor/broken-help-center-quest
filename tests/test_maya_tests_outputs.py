@@ -7,10 +7,10 @@ def test_maya_tests_outputs_is_report_review_skill():
     text = Path("skills/maya-tests-outputs.md").read_text()
 
     assert "roleplay product-acceptance review" in text
-    assert "reports/baseline_report.md" in text
+    assert "analysis/baseline_report.md" in text
     assert "Metric definitions" in text
     assert "Baseline retrieval score" in text
-    assert "Baseline answer-quality score" in text
+    assert "Retrieval hit rate at 5" in text
     assert "Positive examples" in text
     assert "Negative examples" in text
     assert "maya_report_review_passed" in text
@@ -20,7 +20,7 @@ def test_maya_tests_outputs_is_report_review_skill():
 def test_maya_tests_outputs_cli_instructions_match_roleplay_flow():
     assert "No command is needed for Maya to review the report" in INSTRUCTIONS
     assert "skills/maya-tests-outputs.md" in INSTRUCTIONS
-    assert "reports/baseline_report.md" in INSTRUCTIONS
+    assert "analysis/baseline_report.md" in INSTRUCTIONS
     assert "metric definitions" in INSTRUCTIONS
     assert "baseline scores" in INSTRUCTIONS
     assert "positive examples" in INSTRUCTIONS

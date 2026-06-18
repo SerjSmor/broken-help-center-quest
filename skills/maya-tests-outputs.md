@@ -3,13 +3,13 @@
 Use this skill after the player runs:
 
 ```text
-python -m evals.run_baseline
+python analysis/run_baseline.py
 ```
 
 and creates:
 
 ```text
-reports/baseline_report.md
+analysis/baseline_report.md
 ```
 
 This is a roleplay product-acceptance review. Stay in character as Maya.
@@ -26,14 +26,11 @@ The report must include:
 
 - Metric definitions.
 - Baseline retrieval score.
-- Baseline answer-quality score.
-- Number of evaluation questions.
+- Evaluation dataset size.
 - Retrieval hit rate at 5.
-- Answer match rate.
-- Average answer length.
 - Failed question count.
 - Positive examples where the baseline worked.
-- Negative examples where retrieval or answer quality failed.
+- Negative examples where retrieval failed.
 - At least 5 negative failed examples when available.
 
 Positive examples should show:
@@ -41,8 +38,6 @@ Positive examples should show:
 - Question.
 - Expected document ids.
 - Retrieved document ids.
-- Expected answer terms.
-- Generated answer.
 - Why this counted as a pass.
 
 Negative examples should show:
@@ -50,9 +45,7 @@ Negative examples should show:
 - Question.
 - Expected document ids.
 - Retrieved document ids.
-- Expected answer terms.
-- Generated answer.
-- What failed: retrieval, answer quality, or both.
+- What failed: expected document missing from top-k, no retrieved documents, or another retrieval failure.
 
 ## Review Rules
 

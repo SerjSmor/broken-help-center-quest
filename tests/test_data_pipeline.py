@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from scripts.prepare_dataset import normalize_dataset, prepare_dataset
 
 
@@ -13,7 +11,7 @@ def test_normalize_dataset_accepts_huggingface_dataset_like_object():
                 "content": "Connect a domain by updating DNS records at your provider.",
             }
         ],
-        "expert_written": [
+        "wixqa_expertwritten": [
             {
                 "question_id": "ew_001",
                 "question": "How do I connect my domain?",
@@ -33,21 +31,23 @@ def test_normalize_dataset_accepts_huggingface_dataset_like_object():
             "body": "Connect a domain by updating DNS records at your provider.",
         }
     ]
-    assert questions[0]["id"] == "ew_001"
-    assert questions[0]["question"] == "How do I connect my domain?"
-    assert questions[0]["reference_answer"] == "Update DNS records at your domain provider."
-    assert questions[0]["expected_doc_ids"] == [
-        "https://support.wix.com/en/article/connect-a-domain"
+    assert questions == [
+        {
+            "id": "ew_001",
+            "question": "How do I connect my domain?",
+            "answer": "Update DNS records at your domain provider.",
+            "expected_doc_ids": ["https://support.wix.com/en/article/connect-a-domain"],
+        }
     ]
-    assert "Update" in questions[0]["expected_answer_contains"]
 
 
-def test_prepare_dataset_writes_processed_files_from_loaded_dataset(tmp_path, monkeypatch):
-    monkeypatch.chdir(tmp_path)
-    monkeypatch.setattr("scripts.prepare_dataset.PROCESSED_DIR", Path("data/processed"))
-    monkeypatch.setattr(
-        "scripts.prepare_dataset.load_wixqa",
-        lambda _dataset_name: {
+def test_prepare_dataset_writes_processed_files_from_loaded_dataset(tmp_path):
+    output_dir = tmp_path / "data" / "processed"
+
+    prepare_dataset(
+        "mock/wixqa",
+        output_dir=output_dir,
+        load_fn=lambda _dataset_name: {
             "kb": [
                 {
                     "id": "doc_a",
@@ -56,7 +56,7 @@ def test_prepare_dataset_writes_processed_files_from_loaded_dataset(tmp_path, mo
                     "body": "Article A body.",
                 }
             ],
-            "qa": [
+            "wixqa_expertwritten": [
                 {
                     "id": "q_a",
                     "question": "Question A?",
@@ -67,7 +67,39 @@ def test_prepare_dataset_writes_processed_files_from_loaded_dataset(tmp_path, mo
         },
     )
 
-    prepare_dataset("mock/wixqa")
+    assert (output_dir / "documents.jsonl").exists()
+    assert (output_dir / "questions.jsonl").exists()
+    assert sorted(path.name for path in output_dir.iterdir()) == ["documents.jsonl", "questions.jsonl"]
 
-    assert Path("data/processed/documents.jsonl").exists()
-    assert Path("data/processed/eval_questions.jsonl").exists()
+
+def test_prepare_dataset_rebuilds_existing_processed_files(tmp_path):
+    output_dir = tmp_path / "data" / "processed"
+    output_dir.mkdir(parents=True)
+    (output_dir / "documents.jsonl").write_text('{"id":"existing"}\n')
+    (output_dir / "questions.jsonl").write_text('{"id":"existing"}\n')
+
+    prepare_dataset(
+        "mock/wixqa",
+        output_dir=output_dir,
+        load_fn=lambda _dataset_name: {
+            "kb": [
+                {
+                    "id": "doc_rebuilt",
+                    "title": "Rebuilt",
+                    "url": "https://support.wix.com/rebuilt",
+                    "body": "Rebuilt body.",
+                }
+            ],
+            "wixqa_expertwritten": [
+                {
+                    "id": "q_rebuilt",
+                    "question": "Rebuilt?",
+                    "answer": "Rebuilt answer.",
+                    "expected_doc_ids": ["doc_rebuilt"],
+                }
+            ],
+        },
+    )
+
+    assert "doc_rebuilt" in (output_dir / "documents.jsonl").read_text()
+    assert "q_rebuilt" in (output_dir / "questions.jsonl").read_text()

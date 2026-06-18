@@ -7,16 +7,15 @@ from typing import Any
 
 QUEST_KEY = "quest_01"
 STATE_PATH = Path(".buildguild/state.json")
-PRODUCT_REQUIREMENTS_PATH = Path("requirements/quest_01_product_requirements.md")
-DATA_TOUR_NOTES_PATH = Path("notes/quest_01_data_tour.md")
-IMPLEMENTATION_SPEC_PATH = Path("specs/quest_01_implementation_spec.md")
-REPORT_PATH = Path("reports/baseline_report.md")
+PRODUCT_REQUIREMENTS_PATH = Path("analysis/quest_01_product_requirements.md")
+IMPLEMENTATION_SPEC_PATH = Path("analysis/quest_01_implementation_spec.md")
+REPORT_PATH = Path("analysis/baseline_report.md")
 IMPLEMENTATION_FILES = [
-    Path("app/ask.py"),
-    Path("app/rag.py"),
+    Path("analysis/ask.py"),
+    Path("analysis/rag.py"),
     Path("app/retrieval.py"),
-    Path("evals/run_baseline.py"),
-    Path("evals/metrics.py"),
+    Path("analysis/run_baseline.py"),
+    Path("analysis/metrics.py"),
 ]
 
 
@@ -34,8 +33,6 @@ def inspect_checks(root: Path) -> dict[str, bool]:
     return {
         "product_onboarding": bool(quest.get("product_onboarding_completed")),
         "product_requirements": (root / PRODUCT_REQUIREMENTS_PATH).exists(),
-        "data_tour_notes": (root / DATA_TOUR_NOTES_PATH).exists(),
-        "data_tour": bool(quest.get("data_tour_completed")),
         "implementation_spec_file": (root / IMPLEMENTATION_SPEC_PATH).exists(),
         "implementation_spec_done": bool(quest.get("implementation_spec_completed")),
         "implementation": all((root / path).exists() for path in IMPLEMENTATION_FILES),
@@ -47,12 +44,10 @@ def inspect_checks(root: Path) -> dict[str, bool]:
 def resolve_stage(checks: dict[str, bool]) -> tuple[str, str]:
     if not checks["product_onboarding"] or not checks["product_requirements"]:
         return "Product discovery", "/quest-status"
-    if not checks["data_tour_notes"] or not checks["data_tour"]:
-        return "Tour data", "ari-data-guide"
     if not checks["implementation_spec_file"] or not checks["implementation_spec_done"]:
-        return "Write tech spec", "write-technical-spec"
+        return "Tour + spec", "ari-data-guide"
     if not checks["implementation"]:
-        return "Implement baseline", "app + evals"
+        return "Implement baseline", "analysis scripts"
     if not checks["baseline_report"]:
         return "Run evaluation", "baseline report"
     if not checks["maya_review"]:
