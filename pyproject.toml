@@ -17,16 +17,10 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = [
-  "pytest>=8.0",
-]
+dev = []
 
 [project.scripts]
 buildguild = "buildguild.cli:main"
 
 [tool.setuptools.packages.find]
 include = ["buildguild*", "app*", "evals*"]
-
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-pythonpath = ["."]

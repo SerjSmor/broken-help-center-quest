@@ -22,7 +22,6 @@ BuildGuild Quest 1 is a repo-based game:
 uv run buildguild start
 uv run --extra dev invoke data
 uv run buildguild status
-uv run --extra dev invoke test
 ```
 
 `uv run buildguild start` asks for the player name and guidance level. The selected difficulty is stored in `.buildguild/state.json` and controls how much help the quest gives:

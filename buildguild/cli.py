@@ -60,12 +60,6 @@ def run_skill(
     if quest != "quest-01":
         raise typer.BadParameter("Only quest-01 is available in this POC.", param_hint="--quest")
 
-    if skill_name == "test-baseline-rag":
-        from buildguild.skills.test_baseline_rag import run
-
-        run()
-        return
-
     if skill_name == "maya-tests-outputs":
         from buildguild.skills.maya_tests_outputs import run
 
@@ -73,7 +67,7 @@ def run_skill(
         return
 
     raise typer.BadParameter(
-        "Unknown skill. Available skills: maya-tests-outputs, test-baseline-rag.",
+        "Unknown skill. Available skills: maya-tests-outputs.",
         param_hint="skill_name",
     )
 

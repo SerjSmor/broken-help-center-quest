@@ -63,7 +63,6 @@ Useful commands:
 ```text
 uv run buildguild start
 uv run --extra dev invoke data
-uv run --extra dev invoke test
 uv run buildguild status
 ```
 
