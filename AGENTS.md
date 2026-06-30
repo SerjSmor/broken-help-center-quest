@@ -27,12 +27,19 @@ Important constraints:
 - Quest 1 starts with `uv run buildguild start`.
 - Setup asks: "What is your name, brave adventurer?" and "How much guidance do you want on this quest?"
 - When the player asks to start the game or start the quest, complete setup if needed and then immediately read `skills/mike-data-onboarding.md` and begin Mike's scene. Do not stop after `uv run buildguild status` and do not ask for separate confirmation to use Mike's skill.
-- Difficulty is stored at `player.difficulty` in `.buildguild/state.json`.
+- Player name and difficulty are stored in `.buildguild/settings.json`.
+- Quest progress is stored in `.buildguild/state.json`.
+- If `.buildguild/settings.json` exists when starting, ask whether to continue with those settings.
+- Restart must not delete or modify `.buildguild/settings.json`.
 - Default difficulty is `easy`.
 - Difficulty is player-facing guidance level:
   - `easy`: Apprentice mode with direct hints, clear nudges, and frequent check-ins.
   - `medium`: Builder mode with fewer hints; the player drives the investigation.
   - `hard`: Expert mode with minimal spoon-feeding and distracting noise while keeping facts, files, commands, and artifacts correct.
+- This is a learning game about driving coding agents. Do not rush through player tasks end-to-end just because the player says "do it".
+- Prefer a guided pair-programming loop: show the relevant file/data output, explain what it means, ask the player for the next specific decision, then perform the next narrow action.
+- Let the player experiment, including mistaken joins or imperfect approaches. Do not block every mistake up front. If the player chooses a wrong path, help them inspect the result, notice what is off, and recover with a focused hint.
+- In Mike's onboarding, if the player asks the agent to inspect the CSVs, show the file contents first and ask which columns connect the files. Do not create `analysis/article_type_frequency.csv` until the player identifies or confirms the join through article IDs.
 - Mike data onboarding must produce `analysis/article_type_frequency.csv` before Maya product discovery.
 - Mike should explain the drag-and-drop website builder company context and the relationship between support questions, answers, article IDs, and article types.
 - Mike data onboarding is complete only after `quest_01.customer_pain_onboarding_completed = true` and the article-type frequency CSV is valid.

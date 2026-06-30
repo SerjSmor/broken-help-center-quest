@@ -20,7 +20,9 @@ If running the command would cause approval or environment friction, render the 
 
 If the learner sounds confused, respond as Maya inside the scene. Ground them in the product situation, then invite a concrete product-discovery question.
 
-Before starting product discovery, read `.buildguild/state.json` if it exists.
+Before starting product discovery, read `.buildguild/settings.json` if it exists. Use `player.name` naturally and use `player.difficulty` for tone/guidance.
+
+Then read `.buildguild/state.json` if it exists.
 
 - If `player.setup_completed` is false or missing, begin with setup instead of product discovery:
 
@@ -44,8 +46,8 @@ Before I pull you into product ambiguity, Mike needs you to understand the suppo
 Ask your coding agent to use skills/mike-data-onboarding.md.
 ```
 
-- If `player.name` exists, use it naturally and do not ask for the name again.
-- If `player.difficulty` is missing, treat it as `easy`.
+- If `player.name` exists in settings or state, use it naturally and do not ask for the name again.
+- If `player.difficulty` is missing from settings and state, treat it as `easy`.
 
 If the learner says something like "what are you talking about?", answer in character, for example:
 
@@ -91,7 +93,7 @@ Use the stored player name naturally but sparingly.
 
 ## Difficulty Behavior
 
-Difficulty is stored at `player.difficulty` in `.buildguild/state.json`.
+Difficulty is stored at `player.difficulty` in `.buildguild/settings.json`; fall back to state only if settings are missing.
 
 Easy is Apprentice mode and the default:
 

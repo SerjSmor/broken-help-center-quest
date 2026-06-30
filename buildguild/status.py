@@ -10,6 +10,7 @@ from buildguild.onboarding import (
     ARTICLE_TYPE_FREQUENCY_PATH,
     article_type_frequency_is_valid,
 )
+from buildguild.settings import player_settings
 from buildguild.state import load_state
 
 
@@ -44,6 +45,7 @@ def inspect_status() -> Status:
     state = load_state()
     quest = state.get(QUEST_KEY, {})
     player = state.get("player", {})
+    settings_player = player_settings()
 
     setup_done = bool(player.get("setup_completed"))
     customer_pain_onboarding_done = bool(quest.get("customer_pain_onboarding_completed"))
@@ -75,10 +77,10 @@ def inspect_status() -> Status:
     _record(completed, missing, report_found, "Baseline report found")
     _record(completed, missing, maya_report_review_passed, "Maya report review passed")
 
-    player_name = player.get("name")
+    player_name = player.get("name") or settings_player.get("name")
     if player_name is not None:
         player_name = str(player_name)
-    player_difficulty = str(player.get("difficulty", "easy"))
+    player_difficulty = str(player.get("difficulty") or settings_player.get("difficulty", "easy"))
     player_level = int(player.get("level", 1))
     player_title = str(player.get("title", "New Builder"))
     player_xp = int(player.get("xp", 0))

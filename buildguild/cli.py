@@ -4,6 +4,7 @@ from typing import Annotated
 
 import typer
 
+from buildguild.settings import player_settings
 from buildguild.start import DIFFICULTIES, configure_player, print_difficulty_intro
 from buildguild.status import print_status
 
@@ -23,8 +24,23 @@ def start(
 ) -> None:
     """Start Quest 1 by choosing a player name and difficulty."""
     print_difficulty_intro()
-    chosen_name = name or typer.prompt("Name")
-    chosen_difficulty = difficulty or typer.prompt("Difficulty", default="easy")
+    existing_settings = player_settings()
+    chosen_name = name
+    chosen_difficulty = difficulty
+
+    if not chosen_name and not chosen_difficulty and existing_settings:
+        existing_name = existing_settings.get("name")
+        existing_difficulty = existing_settings.get("difficulty", "easy")
+        use_existing = typer.confirm(
+            f"Continue as {existing_name} on {existing_difficulty} difficulty?",
+            default=True,
+        )
+        if use_existing:
+            chosen_name = existing_name
+            chosen_difficulty = existing_difficulty
+
+    chosen_name = chosen_name or typer.prompt("Name")
+    chosen_difficulty = chosen_difficulty or typer.prompt("Difficulty", default="easy")
     if chosen_difficulty.strip().lower() not in DIFFICULTIES:
         allowed = ", ".join(DIFFICULTIES)
         raise typer.BadParameter(f"Choose one of: {allowed}", param_hint="--difficulty")

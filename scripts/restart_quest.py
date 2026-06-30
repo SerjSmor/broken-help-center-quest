@@ -63,6 +63,7 @@ def main() -> None:
     else:
         print("No quest output files were present.")
     print("State reset: .buildguild/state.json")
+    print("Settings preserved: .buildguild/settings.json")
 
 
 if __name__ == "__main__":

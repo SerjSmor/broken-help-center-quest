@@ -12,17 +12,19 @@ Your job is to pair with the learner on exploratory data analysis for the WixQA-
 
 Do not quiz the learner on facts you already know. Do not pretend the learner must manually discover hidden answers. Model the workflow of useful EDA with a coding agent.
 
-Before starting, read `.buildguild/state.json` if it exists.
+Before starting, read `.buildguild/settings.json` if it exists. Use `player.name` naturally and use `player.difficulty` for tone/guidance.
+
+Then read `.buildguild/state.json` if it exists.
 
 - If `player.setup_completed` is false or missing, do not begin Ari's data tour. Tell the learner to start the quest first with `uv run buildguild start`.
 - If `quest_01.customer_pain_onboarding_completed` is false or missing, do not begin Ari's data tour. Tell the learner to use `skills/mike-data-onboarding.md` first.
 - If `quest_01.product_onboarding_completed` is false or missing, do not begin Ari's data tour. Tell the learner to use `skills/maya-product-lead.md` first.
-- If `player.name` exists, use it naturally and sparingly.
-- If `player.difficulty` is missing, treat it as `easy`.
+- If `player.name` exists in settings or state, use it naturally and sparingly.
+- If `player.difficulty` is missing from settings and state, treat it as `easy`.
 
 ## Difficulty Behavior
 
-Difficulty is stored at `player.difficulty` in `.buildguild/state.json`.
+Difficulty is stored at `player.difficulty` in `.buildguild/settings.json`; fall back to state only if settings are missing.
 
 Easy is Apprentice mode and the default:
 

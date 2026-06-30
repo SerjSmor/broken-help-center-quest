@@ -53,7 +53,7 @@ Ask your coding agent:
 Start the BuildGuild game.
 ```
 
-The game will ask your name and guidance level:
+The game will ask your name and guidance level. It remembers those settings between quest restarts:
 
 - `easy`: Apprentice mode with hints and check-ins.
 - `medium`: Builder mode with fewer hints.

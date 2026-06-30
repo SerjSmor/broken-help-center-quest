@@ -24,7 +24,11 @@ uv run --extra dev invoke data
 uv run buildguild status
 ```
 
-`uv run buildguild start` asks for the player name and guidance level. The selected difficulty is stored in `.buildguild/state.json` and controls how much help the quest gives:
+`uv run buildguild start` asks for the player name and guidance level. These settings are stored in `.buildguild/settings.json`; quest progress is stored separately in `.buildguild/state.json`.
+
+If `.buildguild/settings.json` already exists, start asks whether to continue with the same name and guidance level.
+
+The selected difficulty controls how much help the quest gives:
 
 - easy: Apprentice mode with direct hints, clear nudges, and frequent check-ins.
 - medium: Builder mode with fewer hints; the player drives the investigation.
@@ -38,6 +42,7 @@ analysis/quest_01_product_requirements.md
 analysis/quest_01_implementation_spec.md
 analysis/baseline_report.md
 .buildguild/state.json
+.buildguild/settings.json
 ```
 
 ## Flow

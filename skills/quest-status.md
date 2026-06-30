@@ -18,9 +18,10 @@ If running `uv` would trigger cache, permission, environment, or approval fricti
 
 Read:
 
+- `.buildguild/settings.json`
 - `.buildguild/state.json`
-- `player.name`
-- `player.difficulty`
+- `player.name` from settings first, then state fallback.
+- `player.difficulty` from settings first, then state fallback.
 - `player.setup_completed`
 - `player.level`
 - `player.title`

@@ -4,6 +4,7 @@ from pathlib import Path
 
 from rich.console import Console
 
+from buildguild.settings import SETTINGS_PATH, save_settings
 from buildguild.state import STATE_PATH, load_state, save_state
 
 
@@ -31,6 +32,7 @@ def configure_player(
     player["difficulty"] = normalized_difficulty
     player["setup_completed"] = True
     save_state(state, path)
+    save_settings(name=normalized_name, difficulty=normalized_difficulty, path=SETTINGS_PATH)
     return state
 
 

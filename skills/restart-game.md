@@ -19,6 +19,7 @@ First explain exactly what will happen:
   - `analysis/run_baseline.py`
   - `analysis/metrics.py`
 - Reset `.buildguild/state.json` to the default Quest 1 flags.
+- Keep `.buildguild/settings.json` so the player name and difficulty survive restart.
 - Keep starter files, including `app/retrieval.py`, skills, docs, and any prepared WixQA data.
 
 Then ask the player to confirm with this exact phrase:

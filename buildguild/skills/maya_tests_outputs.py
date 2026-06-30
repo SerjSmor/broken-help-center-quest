@@ -15,7 +15,8 @@ Maya should review:
 
 analysis/baseline_report.md
 
-Maya should also read .buildguild/state.json for player.name and player.difficulty.
+Maya should also read .buildguild/settings.json for player.name and player.difficulty,
+with .buildguild/state.json as a fallback.
 
 She should check that the report includes metric definitions, baseline scores, positive examples, and negative failed examples.
 
