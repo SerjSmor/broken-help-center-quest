@@ -1,0 +1,11 @@
+question_id,question,answer,article_ids
+sq_001,Why is my connected domain still not opening my site?,"Check the domain connection and allow DNS changes time to propagate.","kb_001;kb_002"
+sq_002,Can I change my template after publishing?,"You can adjust the design, but changing templates may require rebuilding sections.","kb_003"
+sq_003,Why was I charged after upgrading my plan?,"Review your plan charges and billing cycle details.","kb_006"
+sq_004,How do I accept payments for my store?,"Connect a payment provider and confirm the plan supports payments.","kb_005;kb_006"
+sq_005,My mobile site layout looks broken.,"Use the mobile editor to customize layout separately from desktop.","kb_004"
+sq_006,How do I make appointment slots available?,"Create booking services and set calendar availability.","kb_007;kb_008"
+sq_007,I published but my changes are not visible.,"Confirm the page was published and review live-site publishing behavior.","kb_010"
+sq_008,Can I restore a page I deleted by mistake?,"Use site management tools to recover deleted content when available.","kb_009"
+sq_009,Why can't customers book times on my calendar?,"Check the booking service and calendar availability settings.","kb_007;kb_008"
+sq_010,Why does my domain show the old website?,"Review domain connection and DNS propagation details.","kb_001;kb_002"

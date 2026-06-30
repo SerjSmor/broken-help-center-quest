@@ -8,6 +8,7 @@ Keep it minimal. Do not start a roleplay scene.
 
 BuildGuild Quest 1 is a repo-based game:
 
+- Mike introduces the company data relationship: `skills/mike-data-onboarding.md`.
 - Maya handles product discovery: `skills/maya-product-lead.md`.
 - Ari handles data tour plus technical spec: `skills/ari-data-guide.md`.
 - The backend starter retriever is `app/retrieval.py`.
@@ -33,6 +34,7 @@ uv run --extra dev invoke test
 ## Main Artifacts
 
 ```text
+analysis/article_type_frequency.csv
 analysis/quest_01_product_requirements.md
 analysis/quest_01_implementation_spec.md
 analysis/baseline_report.md
@@ -42,7 +44,7 @@ analysis/baseline_report.md
 ## Flow
 
 ```text
-start -> Maya -> Ari -> implementation -> evaluation report -> Maya review
+start -> Mike -> Maya -> Ari -> implementation -> evaluation report -> Maya review
 ```
 
 If processed data is missing, run `uv run --extra dev invoke data` before the tour.

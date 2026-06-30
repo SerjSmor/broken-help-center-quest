@@ -8,6 +8,7 @@ def test_load_state_creates_default_state(tmp_path):
 
     state = load_state(state_path)
 
+    assert state["quest_01"]["customer_pain_onboarding_completed"] is False
     assert state["quest_01"]["product_onboarding_completed"] is False
     assert state["quest_01"]["implementation_spec_completed"] is False
     assert state["quest_01"]["maya_report_review_passed"] is False
@@ -40,6 +41,7 @@ def test_update_quest_state_preserves_unknown_keys(tmp_path):
     )
 
     assert state["quest_01"]["product_onboarding_completed"] is True
+    assert state["quest_01"]["customer_pain_onboarding_completed"] is False
     assert state["quest_01"]["implementation_spec_completed"] is False
     assert state["quest_01"]["maya_report_review_passed"] is False
     assert state["custom"]["keep"] is True

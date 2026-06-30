@@ -34,7 +34,7 @@ def start(
     typer.echo(
         f"Quest setup complete: {player['name']} chose {player['difficulty']} difficulty."
     )
-    typer.echo("Next: uv run buildguild status")
+    typer.echo("Next: use skills/mike-data-onboarding.md")
 
 
 @app.command()

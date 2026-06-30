@@ -30,7 +30,7 @@
 ║                                                              ║
 ║      > run start                                             ║
 ║      > choose name + difficulty                              ║
-║      > mentor: Maya waits beyond setup_                      ║
+║      > mentor: Mike waits beyond setup_                      ║
 ║                                                              ║
 ║      cache: cold     corpus: awake     ranker: ???           ║
 ║✧       .        ✦      NULL      ???       ✦        .        ║
@@ -61,7 +61,7 @@ The game will ask your name and guidance level:
 
 ## Play
 
-Along the way you will meet Maya, a product manager with sharp product instincts but shaky data intuition, and Ari, your builder buddy for turning messy evidence into a plan.
+Along the way you will meet Mike, the DS lead who shows how support data fits together; Maya, a product manager with sharp product instincts but shaky data intuition; and Ari, your builder buddy for turning messy evidence into a plan.
 
 Talk to the characters, inspect the data, build the baseline, and bring the report back for review.
 

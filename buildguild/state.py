@@ -7,6 +7,7 @@ from typing import Any
 
 DEFAULT_STATE: dict[str, Any] = {
     "quest_01": {
+        "customer_pain_onboarding_completed": False,
         "product_onboarding_completed": False,
         "implementation_spec_completed": False,
         "maya_report_review_passed": False,

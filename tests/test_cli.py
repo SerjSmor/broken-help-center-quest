@@ -50,6 +50,7 @@ def test_cli_status_renders_checkbox_markers(tmp_path, monkeypatch):
     result = runner.invoke(app, ["status"])
 
     assert result.exit_code == 0
+    assert "[ ] Mike data onboarding completed" in result.output
     assert "[ ] Product onboarding completed" in result.output
 
 
@@ -72,10 +73,11 @@ def test_cli_start_saves_name_and_difficulty(tmp_path, monkeypatch):
 
     assert result.exit_code == 0
     assert "Quest setup complete: Serj chose hard difficulty." in result.output
+    assert "Next: use skills/mike-data-onboarding.md" in result.output
 
     status = runner.invoke(app, ["status"])
 
     assert status.exit_code == 0
     assert "Name: Serj" in status.output
     assert "Difficulty: hard" in status.output
-    assert "skills/maya-product-lead.md" in status.output
+    assert "skills/mike-data-onboarding.md" in status.output

@@ -6,6 +6,10 @@ from pathlib import Path
 from rich.console import Console
 
 from buildguild.achievements import unlocked_achievements
+from buildguild.onboarding import (
+    ARTICLE_TYPE_FREQUENCY_PATH,
+    article_type_frequency_is_valid,
+)
 from buildguild.state import load_state
 
 
@@ -42,6 +46,8 @@ def inspect_status() -> Status:
     player = state.get("player", {})
 
     setup_done = bool(player.get("setup_completed"))
+    customer_pain_onboarding_done = bool(quest.get("customer_pain_onboarding_completed"))
+    article_type_frequency_valid = article_type_frequency_is_valid()
     onboarding_done = bool(quest.get("product_onboarding_completed"))
     product_requirements_found = PRODUCT_REQUIREMENTS_PATH.exists()
     implementation_spec_found = IMPLEMENTATION_SPEC_PATH.exists()
@@ -54,6 +60,13 @@ def inspect_status() -> Status:
     missing: list[str] = []
 
     _record(completed, missing, setup_done, "Player setup completed")
+    _record(completed, missing, customer_pain_onboarding_done, "Mike data onboarding completed")
+    _record(
+        completed,
+        missing,
+        article_type_frequency_valid,
+        "Article type frequency CSV valid",
+    )
     _record(completed, missing, onboarding_done, "Product onboarding completed")
     _record(completed, missing, product_requirements_found, "Product requirements found")
     _record(completed, missing, implementation_spec_found, "Implementation spec found")
@@ -77,6 +90,20 @@ def inspect_status() -> Status:
             completed=completed,
             missing=missing,
             next_action="Run: uv run buildguild start",
+            player_name=player_name,
+            player_difficulty=player_difficulty,
+            player_level=player_level,
+            player_title=player_title,
+            player_xp=player_xp,
+            achievements=achievement_names,
+        )
+
+    if not customer_pain_onboarding_done or not article_type_frequency_valid:
+        return Status(
+            stage="Mike data onboarding",
+            completed=completed,
+            missing=missing,
+            next_action=f"Ask your coding agent to use skills/mike-data-onboarding.md and create {ARTICLE_TYPE_FREQUENCY_PATH}.",
             player_name=player_name,
             player_difficulty=player_difficulty,
             player_level=player_level,

@@ -7,7 +7,7 @@ BuildGuild Broken Help Center is a repo-based learning project for users working
 The intended quest flow is:
 
 ```text
-start -> status -> agent-mediated Maya onboarding -> Ari data tour -> technical spec -> learner implementation -> Maya report review
+start -> Mike data onboarding -> agent-mediated Maya onboarding -> Ari data tour -> technical spec -> learner implementation -> Maya report review
 ```
 
 Implemented so far:
@@ -19,18 +19,23 @@ Implemented so far:
 - Start command for player name and difficulty.
 - CLI router.
 - Sample data pipeline.
+- Mike data onboarding scaffold in `skills/mike-data-onboarding.md`.
 - Maya persona scaffold in `skills/maya-product-lead.md`.
 
 Important constraints:
 
 - Quest 1 starts with `uv run buildguild start`.
 - Setup asks: "What is your name, brave adventurer?" and "How much guidance do you want on this quest?"
+- When the player asks to start the game or start the quest, complete setup if needed and then immediately read `skills/mike-data-onboarding.md` and begin Mike's scene. Do not stop after `uv run buildguild status` and do not ask for separate confirmation to use Mike's skill.
 - Difficulty is stored at `player.difficulty` in `.buildguild/state.json`.
 - Default difficulty is `easy`.
 - Difficulty is player-facing guidance level:
   - `easy`: Apprentice mode with direct hints, clear nudges, and frequent check-ins.
   - `medium`: Builder mode with fewer hints; the player drives the investigation.
   - `hard`: Expert mode with minimal spoon-feeding and distracting noise while keeping facts, files, commands, and artifacts correct.
+- Mike data onboarding must produce `analysis/article_type_frequency.csv` before Maya product discovery.
+- Mike should explain the drag-and-drop website builder company context and the relationship between support questions, answers, article IDs, and article types.
+- Mike data onboarding is complete only after `quest_01.customer_pain_onboarding_completed = true` and the article-type frequency CSV is valid.
 - Do not generate `issues/quest_01_baseline.md` for the learner.
 - Product discovery must produce `analysis/quest_01_product_requirements.md` before the learner writes the engineering ticket.
 - The technical spec at `analysis/quest_01_implementation_spec.md` is the implementation ticket. There is no separate ticket-review gate.

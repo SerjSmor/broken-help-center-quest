@@ -11,7 +11,7 @@ def test_banner_contains_quest_title_and_prompt():
     assert "[404] HELP CENTER" in banner
     assert "> run start" in banner
     assert "> choose name + difficulty" in banner
-    assert "> mentor: Maya waits beyond setup_" in banner
+    assert "> mentor: Mike waits beyond setup_" in banner
     assert len(BANNER_LINES) >= 20
     assert len({cell_len(line) for line in BANNER_LINES}) == 1
 

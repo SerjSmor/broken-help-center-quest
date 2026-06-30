@@ -6,6 +6,7 @@ from scripts.restart_quest import CONFIRMATION, restart_quest
 
 def test_restart_quest_removes_outputs_and_resets_state(tmp_path):
     output_files = [
+        "analysis/article_type_frequency.csv",
         "analysis/quest_01_product_requirements.md",
         "analysis/quest_01_implementation_spec.md",
         "analysis/baseline_report.md",
@@ -24,6 +25,7 @@ def test_restart_quest_removes_outputs_and_resets_state(tmp_path):
         json.dumps(
             {
                 "quest_01": {
+                    "customer_pain_onboarding_completed": True,
                     "product_onboarding_completed": True,
                     "implementation_spec_completed": True,
                     "maya_report_review_passed": True,
@@ -55,6 +57,7 @@ def test_restart_quest_removes_outputs_and_resets_state(tmp_path):
     state = json.loads((tmp_path / ".buildguild/state.json").read_text())
     assert state == {
         "quest_01": {
+            "customer_pain_onboarding_completed": False,
             "product_onboarding_completed": False,
             "implementation_spec_completed": False,
             "maya_report_review_passed": False,

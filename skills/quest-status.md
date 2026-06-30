@@ -29,6 +29,7 @@ Read:
 
 Check whether these files exist:
 
+- `analysis/article_type_frequency.csv`
 - `analysis/quest_01_product_requirements.md`
 - `analysis/quest_01_implementation_spec.md`
 - `analysis/baseline_report.md`
@@ -47,29 +48,34 @@ Report the first incomplete stage:
    - Next action: run `uv run buildguild start`.
    - This asks: "What is your name, brave adventurer?" and "How much guidance do you want on this quest?"
 
-2. Product discovery
+2. Mike data onboarding
+   - Needs `quest_01.customer_pain_onboarding_completed = true`.
+   - Needs valid `analysis/article_type_frequency.csv`.
+   - Next action: ask the coding agent to use `skills/mike-data-onboarding.md`.
+
+3. Product discovery
    - Needs `quest_01.product_onboarding_completed = true`.
    - Needs `analysis/quest_01_product_requirements.md`.
 
-3. Tour data and write implementation spec
+4. Tour data and write implementation spec
    - Needs `analysis/quest_01_implementation_spec.md`.
    - Needs `quest_01.implementation_spec_completed = true`.
    - Next action: ask the coding agent to use `skills/ari-data-guide.md`; if using Streamlit, Ari should build the EDA app with the player.
 
-4. Implement baseline evaluation
+5. Implement baseline evaluation
    - Needs `analysis/ask.py`.
    - Needs `analysis/rag.py`.
    - Needs `app/retrieval.py`.
    - Needs `analysis/run_baseline.py`.
    - Needs `analysis/metrics.py`.
 
-5. Run baseline evaluation
+6. Run baseline evaluation
    - Needs `analysis/baseline_report.md`.
 
-6. Maya report review
+7. Maya report review
    - Needs `quest_01.maya_report_review_passed = true`.
 
-7. Quest complete
+8. Quest complete
    - Show unlocked achievements.
    - Say Quest 2 is not available yet and the player should watch the repo for updates.
 

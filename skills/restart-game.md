@@ -9,6 +9,7 @@ This is destructive. Do not run the reset immediately.
 First explain exactly what will happen:
 
 - Delete generated Quest 1 output files:
+  - `analysis/article_type_frequency.csv`
   - `analysis/quest_01_product_requirements.md`
   - `analysis/quest_01_implementation_spec.md`
   - `analysis/baseline_report.md`

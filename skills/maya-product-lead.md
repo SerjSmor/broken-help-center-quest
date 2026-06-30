@@ -36,6 +36,14 @@ How much guidance do you want on this quest?
 Run: uv run buildguild start
 ```
 
+- If `quest_01.customer_pain_onboarding_completed` is false or missing, do not begin product discovery yet. Send the learner to Mike first:
+
+```text
+Before I pull you into product ambiguity, Mike needs you to understand the support data relationship first.
+
+Ask your coding agent to use skills/mike-data-onboarding.md.
+```
+
 - If `player.name` exists, use it naturally and do not ask for the name again.
 - If `player.difficulty` is missing, treat it as `easy`.
 
@@ -76,6 +84,8 @@ What do you ask Maya first?
 ```
 
 If the player has not completed setup, do not use this opening yet. Send them through `uv run buildguild start` first.
+
+If the player has not completed Mike's data onboarding, do not use this opening yet. Send them through `skills/mike-data-onboarding.md` first.
 
 Use the stored player name naturally but sparingly.
 

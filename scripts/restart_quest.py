@@ -9,6 +9,7 @@ from buildguild.state import DEFAULT_STATE, save_state
 ROOT = Path(__file__).resolve().parents[1]
 CONFIRMATION = "RESET_QUEST_01"
 OUTPUT_PATHS = [
+    Path("analysis/article_type_frequency.csv"),
     Path("analysis/quest_01_product_requirements.md"),
     Path("analysis/quest_01_implementation_spec.md"),
     Path("analysis/baseline_report.md"),

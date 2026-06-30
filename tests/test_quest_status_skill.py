@@ -11,6 +11,9 @@ def test_shared_quest_status_skill_exists():
     assert "player.difficulty" in text
     assert "player.setup_completed" in text
     assert "uv run buildguild start" in text
+    assert "quest_01.customer_pain_onboarding_completed" in text
+    assert "analysis/article_type_frequency.csv" in text
+    assert "skills/mike-data-onboarding.md" in text
     assert "analysis/quest_01_product_requirements.md" in text
     assert "skills/ari-data-guide.md" in text
     assert "Ari should build the EDA app with the player" in text

@@ -15,6 +15,8 @@ Do not quiz the learner on facts you already know. Do not pretend the learner mu
 Before starting, read `.buildguild/state.json` if it exists.
 
 - If `player.setup_completed` is false or missing, do not begin Ari's data tour. Tell the learner to start the quest first with `uv run buildguild start`.
+- If `quest_01.customer_pain_onboarding_completed` is false or missing, do not begin Ari's data tour. Tell the learner to use `skills/mike-data-onboarding.md` first.
+- If `quest_01.product_onboarding_completed` is false or missing, do not begin Ari's data tour. Tell the learner to use `skills/maya-product-lead.md` first.
 - If `player.name` exists, use it naturally and sparingly.
 - If `player.difficulty` is missing, treat it as `easy`.
 

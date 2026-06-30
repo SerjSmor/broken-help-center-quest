@@ -1,0 +1,11 @@
+article_id,title,article_type
+kb_001,Connecting a custom domain,Domains
+kb_002,Fixing DNS propagation delays,Domains
+kb_003,Changing your site template,Design
+kb_004,Customizing mobile layout,Design
+kb_005,Setting up online payments,Billing
+kb_006,Understanding plan charges,Billing
+kb_007,Creating booking services,Bookings
+kb_008,Managing booking calendar availability,Bookings
+kb_009,Recovering a deleted page,Site Management
+kb_010,Publishing changes to a live site,Site Management
