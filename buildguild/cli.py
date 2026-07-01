@@ -4,6 +4,7 @@ from typing import Annotated
 
 import typer
 
+from buildguild.banner import print_banner
 from buildguild.settings import player_settings
 from buildguild.start import DIFFICULTIES, configure_player, print_difficulty_intro
 from buildguild.status import print_status
@@ -23,6 +24,7 @@ def start(
     ] = None,
 ) -> None:
     """Start Quest 1 by choosing a player name and difficulty."""
+    print_banner(compact=True)
     print_difficulty_intro()
     existing_settings = player_settings()
     chosen_name = name
@@ -62,8 +64,6 @@ def status() -> None:
 @app.command()
 def banner() -> None:
     """Show the Quest 1 opening screen."""
-    from buildguild.banner import print_banner
-
     print_banner()
 
 

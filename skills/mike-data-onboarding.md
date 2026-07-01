@@ -73,7 +73,7 @@ Explain:
 - Customers use it to build, design, and manage websites without writing code.
 - The product is flexible, but that also means customers get stuck in technical details.
 - Support teams answer customer questions with help-center articles.
-- Articles have types, such as Domains, Design, Billing, Bookings, and Site Management.
+- Articles have types, such as `article`, `feature_request`, and `known_issue`.
 - Support questions include a full answer and one or more article IDs that were used to answer the customer.
 
 ## If The Player Asks About The Company Or Team
@@ -121,13 +121,13 @@ When the player is ready, explain the task clearly:
 ```text
 Great. Your first onboarding task starts with the support team.
 
-Because customers ask very technical questions, our support team built a knowledge base with many help-center articles. Those articles are not all the same kind of thing. Some are about Domains, some are about Design, some are about Billing, Bookings, or Site Management.
+Because customers ask very technical questions, our support team built a knowledge base with many help-center articles. Those articles are not all the same kind of thing. Some are regular articles, some are feature requests, and some document known issues.
 
 You can see those article records in:
 
 data/onboarding/articles.csv
 
-That file maps each article ID to metadata, including its article type.
+That file maps each article ID to metadata, including its article type: `article`, `feature_request`, or `known_issue`.
 
 We also have a list of customer support questions. For each one, we kept the customer's question, the support team's answer, and the article IDs the team decided to use while answering.
 
@@ -219,20 +219,14 @@ Suggested steps:
 
 ## Completion
 
-After the output exists, verify it against the starter CSVs.
+After the output exists, verify it against the onboarding CSVs.
 
-The expected result is:
+Do not use hard-coded sample counts. Compute the expected result from:
 
-```text
-article_type,count
-Domains,4
-Bookings,4
-Billing,3
-Design,2
-Site Management,2
-```
+- `data/onboarding/articles.csv`
+- `data/onboarding/support_questions.csv`
 
-Sorting may put `Domains` and `Bookings` in either order because they tie.
+The current local dataset has 6,221 article records and 200 support-question records. If those files change, recompute from the files.
 
 When the file is correct:
 
@@ -244,7 +238,7 @@ When the file is correct:
 Then say:
 
 ```text
-Nice. You just found the first customer-pain signal: Domains and Bookings are tied as the most referenced article types in this sample.
+Nice. You just found the first customer-pain signal from the real local onboarding data.
 
 That is the first useful thread: support questions point to article IDs, article IDs point to article types, and article types give us a rough map of customer pain.
 

@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import csv
 from collections.abc import Iterable, Mapping
 from pathlib import Path
 from typing import Any
@@ -11,6 +12,9 @@ ROOT = Path(__file__).resolve().parents[1]
 PROCESSED_DIR = ROOT / "data" / "processed"
 DOCUMENTS_PATH = PROCESSED_DIR / "documents.jsonl"
 QUESTIONS_PATH = PROCESSED_DIR / "questions.jsonl"
+ONBOARDING_DIR = ROOT / "data" / "onboarding"
+ONBOARDING_ARTICLES_PATH = ONBOARDING_DIR / "articles.csv"
+ONBOARDING_SUPPORT_QUESTIONS_PATH = ONBOARDING_DIR / "support_questions.csv"
 DEFAULT_DATASET_NAME = "Wix/WixQA"
 DEFAULT_DATASET_CONFIGS = ("wix_kb_corpus", "wixqa_expertwritten")
 DATASET_ENV_VAR = "BUILDGUILD_WIXQA_DATASET"
@@ -30,6 +34,7 @@ DOC_BODY_KEYS = (
 DOC_TITLE_KEYS = ("title", "article_title", "name")
 DOC_URL_KEYS = ("url", "article_url", "source_url", "link")
 DOC_ID_KEYS = ("id", "doc_id", "document_id", "article_id", "kb_id")
+DOC_TYPE_KEYS = ("article_type", "type")
 QUESTION_ID_KEYS = ("id", "question_id", "qa_id")
 SOURCE_DOC_KEYS = (
     "article_ids",
@@ -65,8 +70,11 @@ def prepare_dataset(
     output_dir.mkdir(parents=True, exist_ok=True)
     write_jsonl(documents_path, documents)
     write_jsonl(questions_path, questions)
+    write_onboarding_csvs(documents, questions)
     print(f"Wrote {len(documents)} documents to {documents_path}")
     print(f"Wrote {len(questions)} questions to {questions_path}")
+    print(f"Wrote {len(documents)} onboarding articles to {ONBOARDING_ARTICLES_PATH}")
+    print(f"Wrote {len(questions)} onboarding support questions to {ONBOARDING_SUPPORT_QUESTIONS_PATH}")
 
 
 def load_wixqa(dataset_name: str) -> DatasetDict | IterableDatasetDict | dict[str, Any]:
@@ -142,11 +150,13 @@ def normalize_document(row: Mapping[str, Any], index: int) -> dict[str, Any]:
     title = first_value(row, DOC_TITLE_KEYS) or f"Untitled article {index}"
     url = first_value(row, DOC_URL_KEYS) or str(raw_id)
     body = first_value(row, DOC_BODY_KEYS) or ""
+    article_type = first_value(row, DOC_TYPE_KEYS) or ""
     return {
         "id": stable_id(raw_id, "doc", index),
         "title": clean_text(title),
         "url": clean_text(url),
         "body": clean_text(body),
+        "article_type": clean_text(article_type),
     }
 
 
@@ -206,6 +216,46 @@ def clean_text(value: Any) -> str:
 
 def write_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
     path.write_text("\n".join(json.dumps(row, ensure_ascii=False) for row in rows) + "\n")
+
+
+def write_onboarding_csvs(
+    documents: list[dict[str, Any]],
+    questions: list[dict[str, Any]],
+    output_dir: Path = ONBOARDING_DIR,
+) -> None:
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    with (output_dir / "articles.csv").open("w", newline="") as handle:
+        writer = csv.DictWriter(
+            handle,
+            fieldnames=["article_id", "title", "article_type", "url"],
+        )
+        writer.writeheader()
+        for document in documents:
+            writer.writerow(
+                {
+                    "article_id": document["id"],
+                    "title": document["title"],
+                    "article_type": document.get("article_type", ""),
+                    "url": document["url"],
+                }
+            )
+
+    with (output_dir / "support_questions.csv").open("w", newline="") as handle:
+        writer = csv.DictWriter(
+            handle,
+            fieldnames=["question_id", "question", "answer", "article_ids"],
+        )
+        writer.writeheader()
+        for question in questions:
+            writer.writerow(
+                {
+                    "question_id": question["id"],
+                    "question": question["question"],
+                    "answer": question["answer"],
+                    "article_ids": ";".join(question["expected_doc_ids"]),
+                }
+            )
 
 
 if __name__ == "__main__":

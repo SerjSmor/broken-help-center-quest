@@ -74,8 +74,8 @@ def _build_compact_banner() -> list[str]:
     )
 
 
-def render_banner(width: int | None = None) -> Text:
-    lines = _select_banner_lines(width)
+def render_banner(width: int | None = None, *, compact: bool = False) -> Text:
+    lines = COMPACT_BANNER_LINES if compact else _select_banner_lines(width)
     text = Text()
     for line in lines:
         _append_styled_line(text, line)
@@ -83,9 +83,9 @@ def render_banner(width: int | None = None) -> Text:
     return text
 
 
-def print_banner(console: Console | None = None) -> None:
+def print_banner(console: Console | None = None, *, compact: bool = False) -> None:
     console = console or Console()
-    console.print(render_banner(console.size.width), highlight=False, soft_wrap=True)
+    console.print(render_banner(console.size.width, compact=compact), highlight=False, soft_wrap=True)
 
 
 def _select_banner_lines(width: int | None) -> list[str]:
