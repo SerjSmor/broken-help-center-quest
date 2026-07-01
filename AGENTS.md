@@ -19,6 +19,7 @@ Implemented so far:
 - Start command for player name and difficulty.
 - CLI router.
 - Sample data pipeline.
+- Production-shaped chatbot wrapper in `app/chatbot.py`.
 - Mike data onboarding scaffold in `skills/mike-data-onboarding.md`.
 - Maya persona scaffold in `skills/maya-product-lead.md`.
 
@@ -39,7 +40,8 @@ Important constraints:
 - This is a learning game about driving coding agents. Do not rush through player tasks end-to-end just because the player says "do it".
 - Prefer a guided pair-programming loop: show the relevant file/data output, explain what it means, ask the player for the next specific decision, then perform the next narrow action.
 - Let the player experiment, including mistaken joins or imperfect approaches. Do not block every mistake up front. If the player chooses a wrong path, help them inspect the result, notice what is off, and recover with a focused hint.
-- In Mike's onboarding, if the player asks the agent to inspect the CSVs, show the file contents first and ask which columns connect the files. Do not create `analysis/article_type_frequency.csv` until the player identifies or confirms the join through article IDs.
+- When showing CSV rows to the player, do not dump raw wide lines unless the player explicitly asks for raw output. Show a compact readable preview: dataset name, selected columns, 3-5 rows, shortened long IDs with `...`, shortened long text with clear labels like `question (shortened)`, and a brief note that the underlying files contain the full values.
+- In Mike's onboarding, if the player asks the agent to inspect the CSVs, show a compact table-style preview of the file contents first and ask which columns connect the files. Do not create `analysis/article_type_frequency.csv` until the player identifies or confirms the join through article IDs.
 - Mike data onboarding must produce `analysis/article_type_frequency.csv` before Maya product discovery.
 - Mike should explain the drag-and-drop website builder company context and the relationship between support questions, answers, article IDs, and article types.
 - Mike data onboarding is complete only after `quest_01.customer_pain_onboarding_completed = true` and the article-type frequency CSV is valid.
@@ -62,7 +64,7 @@ Important constraints:
 - Unlock `product_hunch` after product discovery, `data_intuition` after Ari's spec step, and `baseline_before_optimization` after Maya accepts the report.
 - Quest 1 completion levels the player to Level 2, title `Baseline Builder`.
 - Quest 2 is not available yet; tell the player to watch the repo for updates.
-- After product discovery, use `skills/ari-data-guide.md` for EDA and technical spec writing. Ari may inspect files and run small scripts, but must not implement the baseline evaluator.
+- After product discovery, use `skills/ari-data-guide.md` for EDA and technical spec writing. Ari may inspect files and run small scripts, including one run through `app/chatbot.py`, but must not implement the baseline evaluator.
 - Keep agentic RAG, reranking, hybrid retrieval, Slack, GitHub API, and dashboards out of Quest 1 scope.
 
 Useful commands:

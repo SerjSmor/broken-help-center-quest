@@ -22,6 +22,7 @@ IMPLEMENTATION_FILES = [
     Path("analysis/ask.py"),
     Path("analysis/rag.py"),
     Path("app/retrieval.py"),
+    Path("app/chatbot.py"),
     Path("analysis/run_baseline.py"),
     Path("analysis/metrics.py"),
 ]

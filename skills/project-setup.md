@@ -12,6 +12,7 @@ BuildGuild Quest 1 is a repo-based game:
 - Maya handles product discovery: `skills/maya-product-lead.md`.
 - Ari handles data tour plus technical spec: `skills/ari-data-guide.md`.
 - The backend starter retriever is `app/retrieval.py`.
+- The current chatbot-shaped pipeline is `app/chatbot.py`: question -> retrieve top 5 articles -> draft a simple source-based answer.
 - The player implements the evaluator/report around that retriever.
 - Quest progress can unlock achievements: Product Hunch, Data Intuition, and Baseline Before Optimization.
 - Quest 1 completion levels the player to Baseline Builder; Quest 2 is not available yet.
@@ -51,4 +52,4 @@ analysis/baseline_report.md
 start -> Mike -> Maya -> Ari -> implementation -> evaluation report -> Maya review
 ```
 
-If processed data is missing, run `uv run --extra dev invoke data` before the tour.
+If the onboarding CSVs are missing, run `uv run --extra dev invoke data` before the tour.

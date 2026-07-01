@@ -46,6 +46,8 @@ This is the actual implementation ticket for Quest 1.
 
 - Command: `python analysis/run_baseline.py`
 - Retrieval uses the existing backend lexical retriever in `app/retrieval.py`.
+- The current chatbot path is `app/chatbot.py`: customer question -> top 5 retrieved articles -> simple source-based answer.
+- Data comes from `data/onboarding/articles.csv` and `data/onboarding/support_questions.csv`.
 - The learner implements the retrieval evaluation harness, CLI path, and report.
 - Retrieval evaluates whether the expected WixQA source article appears in the top 5 retrieved documents.
 - Metrics:

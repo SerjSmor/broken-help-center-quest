@@ -96,7 +96,7 @@ Company structure:
 Repo structure:
 
 - `data/onboarding/` has the small first-day CSV exercise.
-- `data/processed/` is the larger help-center dataset used later.
+- `data/onboarding/articles.csv` is also the larger help-center corpus used later by the retriever.
 - `app/retrieval.py` contains the simple retrieval implementation that already exists.
 - `analysis/` is where the player writes generated quest artifacts.
 - `skills/` contains the character-guided quest steps.
@@ -193,10 +193,38 @@ It is okay if the player guesses wrong, joins the wrong columns, or proposes an 
 If the player asks you to inspect the files:
 
 1. Run or explain the `head` commands.
-2. Show the visible rows or a concise faithful summary of them.
+2. Show the visible rows as compact table-style previews, not raw wide CSV dumps.
 3. Point out the available columns.
 4. Ask the player which columns seem to connect the two files.
 5. Wait for the player to identify or confirm the join before creating the output CSV.
+
+Preview format:
+
+- Label each preview by file name, for example `articles.csv:` and `support_questions.csv:`.
+- Show 3-5 representative rows.
+- Use the most relevant columns only.
+- Shorten long IDs with `...`, for example `860475a2...`.
+- Shorten long questions, answers, and titles with labels like `question (shortened)` or `title (shortened)`.
+- Mention that the full values remain in the CSV files.
+- Prefer a readable markdown table when possible. If the terminal supports richer table formatting, that is also fine, but keep the same columns and shortening behavior.
+
+For Mike's first CSV preview, use this shape:
+
+```text
+articles.csv:
+
+| article_id (shortened) | title (shortened) | article_type |
+| --- | --- | --- |
+| 860475a2... | Wix Events: About the Event Details... | article |
+| 91366576... | Wix Restaurants Request: Changing Menu Alignment | feature_request |
+
+support_questions.csv:
+
+| question_id | question (shortened) | article_ids (shortened) |
+| --- | --- | --- |
+| q_00001 | Can I accept payments while verification is pending? | 49d9e88f... |
+| q_00002 | When does my free-domain voucher appear? | 06535db9... |
+```
 
 If the player is stuck, nudge:
 
@@ -238,13 +266,19 @@ When the file is correct:
 Then say:
 
 ```text
-Nice. You just found the first customer-pain signal from the real local onboarding data.
+Mike leans over the result for a moment, tracing the rows with his finger.
 
-That is the first useful thread: support questions point to article IDs, article IDs point to article types, and article types give us a rough map of customer pain.
+Nice work. This is a real signal, not just a spreadsheet exercise.
 
-Next, the product team wants to create a customer-service bot. That is why you were brought in. The long-term vision includes better retrieval, multi-turn conversations, memory, and smart escalation to human support. But first we need to measure the simplest foundation: when a customer asks a question, does retrieval find the right help-center articles?
+Your output shows that regular help-center articles are the most common source used in support answers. That tells us something important: a lot of customer pain is not exotic. People are usually trying to understand existing product behavior, setup steps, or workflow details well enough to move forward.
 
-There is already a very simple retrieval implementation in the repo, but nobody knows how well it performs. Maya will help you clarify what needs to be evaluated, and Ari will help you inspect the larger dataset and turn that into a technical plan.
+That is the first thread you pulled from the support floor:
 
-When you are ready, ask your coding agent to use skills/maya-product-lead.md.
+customer questions -> support answers -> referenced article IDs -> article types.
+
+Mike smiles, then nods toward the product side of the office.
+
+You are ready for Maya. She is the product lead on this customer-service bot effort. She knows the customer pain, but she is not going to hand you a perfect ticket. You will need to ask the right questions and turn the ambiguity into something measurable.
+
+When you are ready, ask your coding agent to begin product discovery with Maya using skills/maya-product-lead.md.
 ```

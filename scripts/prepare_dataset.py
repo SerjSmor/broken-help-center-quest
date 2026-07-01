@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 import os
 import re
 import csv
@@ -9,9 +8,6 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
-PROCESSED_DIR = ROOT / "data" / "processed"
-DOCUMENTS_PATH = PROCESSED_DIR / "documents.jsonl"
-QUESTIONS_PATH = PROCESSED_DIR / "questions.jsonl"
 ONBOARDING_DIR = ROOT / "data" / "onboarding"
 ONBOARDING_ARTICLES_PATH = ONBOARDING_DIR / "articles.csv"
 ONBOARDING_SUPPORT_QUESTIONS_PATH = ONBOARDING_DIR / "support_questions.csv"
@@ -52,7 +48,7 @@ SOURCE_DOC_KEYS = (
 
 def prepare_dataset(
     dataset_name: str | None = None,
-    output_dir: Path = PROCESSED_DIR,
+    output_dir: Path = ONBOARDING_DIR,
     load_fn=None,
 ) -> None:
     dataset_name = dataset_name or os.environ.get(DATASET_ENV_VAR, DEFAULT_DATASET_NAME)
@@ -65,16 +61,9 @@ def prepare_dataset(
     if not questions:
         raise ValueError("Could not find WixQA question rows in the Hugging Face dataset.")
 
-    documents_path = output_dir / "documents.jsonl"
-    questions_path = output_dir / "questions.jsonl"
-    output_dir.mkdir(parents=True, exist_ok=True)
-    write_jsonl(documents_path, documents)
-    write_jsonl(questions_path, questions)
-    write_onboarding_csvs(documents, questions)
-    print(f"Wrote {len(documents)} documents to {documents_path}")
-    print(f"Wrote {len(questions)} questions to {questions_path}")
-    print(f"Wrote {len(documents)} onboarding articles to {ONBOARDING_ARTICLES_PATH}")
-    print(f"Wrote {len(questions)} onboarding support questions to {ONBOARDING_SUPPORT_QUESTIONS_PATH}")
+    write_onboarding_csvs(documents, questions, output_dir)
+    print(f"Wrote {len(documents)} articles to {output_dir / 'articles.csv'}")
+    print(f"Wrote {len(questions)} support questions to {output_dir / 'support_questions.csv'}")
 
 
 def load_wixqa(dataset_name: str) -> DatasetDict | IterableDatasetDict | dict[str, Any]:
@@ -169,7 +158,10 @@ def normalize_question(row: Mapping[str, Any], index: int) -> dict[str, Any]:
         "id": stable_id(raw_id, "q", index),
         "question": clean_text(question),
         "answer": clean_text(answer),
-        "expected_doc_ids": [stable_id(value, "doc", position + 1) for position, value in enumerate(source_doc_ids)],
+        "article_ids": [
+            stable_id(value, "doc", position + 1)
+            for position, value in enumerate(source_doc_ids)
+        ],
     }
 
 
@@ -214,10 +206,6 @@ def clean_text(value: Any) -> str:
     return re.sub(r"\s+", " ", str(value)).strip()
 
 
-def write_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
-    path.write_text("\n".join(json.dumps(row, ensure_ascii=False) for row in rows) + "\n")
-
-
 def write_onboarding_csvs(
     documents: list[dict[str, Any]],
     questions: list[dict[str, Any]],
@@ -228,7 +216,7 @@ def write_onboarding_csvs(
     with (output_dir / "articles.csv").open("w", newline="") as handle:
         writer = csv.DictWriter(
             handle,
-            fieldnames=["article_id", "title", "article_type", "url"],
+            fieldnames=["article_id", "title", "article_type", "url", "body"],
         )
         writer.writeheader()
         for document in documents:
@@ -238,6 +226,7 @@ def write_onboarding_csvs(
                     "title": document["title"],
                     "article_type": document.get("article_type", ""),
                     "url": document["url"],
+                    "body": document["body"],
                 }
             )
 
@@ -253,7 +242,7 @@ def write_onboarding_csvs(
                     "question_id": question["id"],
                     "question": question["question"],
                     "answer": question["answer"],
-                    "article_ids": ";".join(question["expected_doc_ids"]),
+                    "article_ids": ";".join(question["article_ids"]),
                 }
             )
 

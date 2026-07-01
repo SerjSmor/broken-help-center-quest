@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import json
+import csv
 import math
 import re
 from collections import Counter
@@ -10,7 +10,7 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_DOCUMENTS_PATH = ROOT / "data" / "processed" / "documents.jsonl"
+DEFAULT_ARTICLES_PATH = ROOT / "data" / "onboarding" / "articles.csv"
 TOKEN_RE = re.compile(r"[A-Za-z0-9]+")
 
 
@@ -33,10 +33,11 @@ class LexicalRetriever:
         self._idf = compute_idf(self._doc_tokens)
 
     @classmethod
-    def from_jsonl(cls, path: Path = DEFAULT_DOCUMENTS_PATH) -> "LexicalRetriever":
+    def from_csv(cls, path: Path = DEFAULT_ARTICLES_PATH) -> "LexicalRetriever":
         if not path.exists():
-            raise FileNotFoundError(f"Missing processed documents file: {path}")
-        documents = [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
+            raise FileNotFoundError(f"Missing articles CSV: {path}")
+        with path.open(newline="") as handle:
+            documents = [normalize_article_row(row) for row in csv.DictReader(handle)]
         return cls(documents)
 
     def search(self, query: str, top_k: int = 5) -> list[SearchResult]:
@@ -67,6 +68,19 @@ class LexicalRetriever:
 
 def document_text(document: dict[str, Any]) -> str:
     return f"{document.get('title', '')} {document.get('body', '')}"
+
+
+def normalize_article_row(row: dict[str, str]) -> dict[str, str]:
+    required = ("article_id", "title", "url", "body")
+    missing = [key for key in required if key not in row]
+    if missing:
+        raise ValueError(f"Missing required article CSV columns: {', '.join(missing)}")
+    return {
+        "id": row["article_id"],
+        "title": row["title"],
+        "url": row["url"],
+        "body": row["body"],
+    }
 
 
 def tokenize(text: str) -> list[str]:

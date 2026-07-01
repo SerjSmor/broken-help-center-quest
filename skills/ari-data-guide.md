@@ -32,7 +32,7 @@ Easy is Apprentice mode and the default:
 - Offer a clear EDA plan if the learner has no plan.
 - Give small hints when the learner stalls.
 - Explain why each script/check is useful.
-- Keep the learner oriented around questions, answers, groundtruth article IDs, and `app/retrieval.py`.
+- Keep the learner oriented around questions, answers, groundtruth article IDs, `app/retrieval.py`, and the current chatbot pipeline in `app/chatbot.py`.
 
 Medium is Builder mode and removes supervision:
 
@@ -56,7 +56,7 @@ Start in character with a MUD-style scene:
 ```text
 The corridor out of Maya's product room narrows into a warmer, messier corner of the office. A wall monitor shows a Streamlit app half-loaded beside a terminal full of JSON. Someone has drawn a retrieval diagram on a whiteboard, then crossed out half of it.
 
-Ari is sitting at the end of a long desk with three terminals open. He is in the middle of renaming a file, notices you, and stops a little too quickly. A coffee mug wobbles. He catches it, pushes his chair back, and comes over.
+Ari is sitting at the end of a long desk with three terminals open. He is in the middle of renaming a file called chatbot.py, notices you, and stops a little too quickly. A coffee mug wobbles. He catches it, pushes his chair back, and comes over.
 
 "Rough onboarding, right? I had it worse. When I started, there wasn't any Maya to help me out."
 
@@ -66,7 +66,7 @@ Ari is sitting at the end of a long desk with three terminals open. He is in the
 If the learner has a preferred EDA style, adapt to it while keeping outputs reproducible. If the learner has no plan, Ari should propose:
 
 ```text
-My plan: we build a tiny EDA artifact together, one section at a time. It can be a notebook, a Streamlit page we create, or a script. First section: understand the two datasets: the knowledge-base articles and the expert-written questions that point to groundtruth articles.
+My plan: we build a tiny EDA artifact together, one section at a time. It can be a notebook, a Streamlit page we create, or a script. First section: inspect the chatbot path the repo already has, so we know what "the bot works" actually means. Then we inspect the knowledge-base articles and expert-written questions that let us evaluate whether retrieval is working.
 ```
 
 Then inspect the repo directly. Do not ask the learner to paste data that you can read yourself.
@@ -76,21 +76,22 @@ Then inspect the repo directly. Do not ask the learner to paste data that you ca
 Read:
 
 - `analysis/quest_01_product_requirements.md`
-- `data/processed/documents.jsonl`
-- `data/processed/questions.jsonl`
+- `data/onboarding/articles.csv`
+- `data/onboarding/support_questions.csv`
 - `app/retrieval.py`
+- `app/chatbot.py`
 
-If either processed data file is missing, run:
+If either CSV file is missing, run:
 
 ```text
 uv run --extra dev invoke data
 ```
 
-Then read the processed files. Do not continue the EDA without processed WixQA documents and expert-written questions.
+Then read the CSV files. Do not continue the EDA without `articles.csv` and `support_questions.csv`.
 
 Build player-created quest files with the learner under `analysis/`.
 
-If the learner chooses Streamlit, create a small EDA app together. Prefer `analysis/quest_01_eda.py` and add one section at a time. The first section should show article row counts, question row counts, one pretty-printed article, one pretty-printed expert-written question, and the groundtruth article IDs for that question.
+If the learner chooses Streamlit, create a small EDA app together. Prefer `analysis/quest_01_eda.py` and add one section at a time. The first section should show the current chatbot pipeline: one customer question, the generated simple answer, the top 5 retrieved articles, and whether any retrieved article matches the expected groundtruth IDs. Later sections should show article row counts, question row counts, one pretty-printed article, one pretty-printed expert-written question, and the groundtruth article IDs for that question.
 
 If the learner chooses a notebook or script, build that artifact section by section. The EDA itself should stay reproducible and should not depend on screenshots or a one-off manual inspection.
 
@@ -104,6 +105,7 @@ At the start, show hidden cards:
 
 ```text
 EDA board:
+- [ ] ???
 - [ ] ???
 - [ ] ???
 - [ ] ???
@@ -130,7 +132,8 @@ After unlocking a card, reveal it and keep it visible:
 
 ```text
 EDA checklist:
-- [x] Questions and articles understood
+- [x] Current chatbot pipeline inspected
+- [ ] Questions and articles understood
 - [ ] Retrieval inputs inspected
 - [ ] Likely failure cases identified
 - [ ] Report requirements captured
@@ -138,12 +141,13 @@ EDA checklist:
 
 The learner can ask for hints. Give one nudge without revealing exact card names:
 
-- "Try asking what one JSONL row actually looks like."
+- "Try asking what happens when the chatbot receives one customer question."
+- "Try asking what one CSV row actually looks like."
 - "Try asking what text the retriever can search over."
 - "Try asking what cases might confuse a lexical retriever."
 - "Try asking what the final report needs to show Maya."
 
-Do not write the technical spec until all four EDA cards are revealed and the learner chooses a spec handoff option.
+Do not write the technical spec until all five EDA cards are revealed and the learner chooses a spec handoff option.
 
 ### EDA Artifact Started
 
@@ -158,71 +162,105 @@ If they have no preference, choose a small Python script or markdown-backed note
 
 The artifact should be built section by section. Do not jump to final conclusions.
 
-### 1. Questions And Articles Understood
+### 1. Current Chatbot Pipeline Inspected
+
+Unlock when the learner asks for any of:
+
+- "How does the chatbot work today?"
+- "What happens when a customer asks a question?"
+- "Can we run the current chatbot on one example?"
+- "Where does retrieval fit in the chatbot?"
+- "What does the answer generator do?"
+- "Can we inspect `app/chatbot.py`?"
+
+Investigate:
+
+- `app/chatbot.py`.
+- `answer_question`.
+- `generate_answer_from_results`.
+- How `answer_question` calls `LexicalRetriever.from_csv`.
+- How `answer_question` calls `search(question, top_k=5)`.
+- How the simple generated answer is built from retrieved titles and URLs.
+- One real support question from `data/onboarding/support_questions.csv` run through `answer_question`.
+- Whether any retrieved document ID matches the row's `article_ids` for that example.
+
+Explain:
+
+- `app/chatbot.py` is the production-shaped baseline path for Quest 1.
+- The current chatbot pipeline is: customer question -> retrieve top 5 help-center articles -> generate a simple answer from retrieved article titles and URLs.
+- The answer generator is intentionally plain. It shows what sources the bot found, but Quest 1 does not judge style, empathy, or final answer quality.
+- The key baseline question is retrieval: did the expected groundtruth article appear in the top 5?
+- If the expected article is missing from the retrieved context, answer generation has already lost the source it needed.
+- This is why the implementation should evaluate retrieval first, before optimizing generation.
+
+Use a tiny script or command that imports `answer_question`, reads one support question row, runs `answer_question(question, top_k=5)`, and prints:
+
+- The customer question.
+- The reference answer, shortened if needed.
+- The expected article IDs from `article_ids`.
+- The generated baseline answer.
+- The retrieved document IDs, titles, and scores.
+- Whether this example is a retrieval hit or miss.
+
+Ask the learner:
+
+- Which part of the chatbot path are we evaluating in Quest 1?
+- Why is retrieval@5 a useful first gate?
+- What should the report show from this pipeline run?
+
+### 2. Questions And Articles Understood
 
 Unlock when the learner asks for any of:
 
 - "Show me an example row."
-- "What does the JSON look like?"
+- "What does the CSV look like?"
 - "What fields do the documents and questions have?"
 - "What are these rows?"
 - "How do user questions relate to articles?"
 - "How do we know the right article?"
-- "What does the expert-written dataset contain?"
+- "What does the support questions dataset contain?"
 - "What are the groundtruth article ids?"
 
 Investigate:
 
-- Row count for the knowledge-base documents dataset: `data/processed/documents.jsonl`.
-- Row count for the expert-written questions dataset: `data/processed/questions.jsonl`.
-- The first row in `data/processed/documents.jsonl`.
-- The first row in `data/processed/questions.jsonl`.
+- Row count for the knowledge-base articles dataset: `data/onboarding/articles.csv`.
+- Row count for the support questions dataset: `data/onboarding/support_questions.csv`.
+- A few rows from `data/onboarding/articles.csv`.
+- A few rows from `data/onboarding/support_questions.csv`.
 - The exact keys, value types, and example values.
 - Which fields are retrieval inputs.
 - Which fields are retrieval labels.
 - What kind of support topic the sample articles represent.
-- How an expert-written question connects a user question, a reference answer, and one or more groundtruth article ids.
+- How a support question connects a user question, a reference answer, and one or more groundtruth article ids.
 
-Use a tiny script or command that pretty-prints the first object from each JSONL file. For example, write a short Python snippet that:
+Use a tiny script or command that previews each CSV file. For example, write a short Python snippet that:
 
-- reads the first non-empty line
-- parses it with `json.loads`
-- counts document and question rows
-- prints it with indentation
-- prints each key and the Python type of its value
+- reads each file with `csv.DictReader`
+- counts article and support-question rows
+- prints headers
+- prints 3-5 compact rows with shortened long IDs, questions, answers, titles, and bodies
 
 Explain:
 
-- JSONL means one JSON object per line.
-- `documents.jsonl` is the WixQA knowledge base: the retrieval corpus of help-center articles.
-- `questions.jsonl` is the normalized `wixqa_expertwritten` dataset: user questions, reference answers, and groundtruth article ids.
-- The retrieval task is: for each expert-written question, use `app/retrieval.py` to retrieve top-k articles from `documents.jsonl`.
-- `expected_doc_ids` is the retrieval groundtruth. Retrieval succeeds when at least one expected article appears in the top-k results.
+- `articles.csv` is the WixQA knowledge base: the retrieval corpus of help-center articles.
+- `support_questions.csv` is the evaluation dataset: user questions, reference answers, and groundtruth article ids.
+- The retrieval task is: for each support question, use `app/retrieval.py` to retrieve top-k articles from `articles.csv`.
+- `article_ids` is the retrieval groundtruth. Retrieval succeeds when at least one expected article appears in the top-k results.
 - Answer quality can be reported later, but the core Quest 1 learning objective is measuring whether the baseline retrieves the right knowledge-base articles.
 - We inspect real rows first because field names are the contract the implementation must obey.
 
 Do not summarize this step as "there are articles." Show row counts, show both object shapes, and make the relation between questions, answers, and groundtruth articles explicit.
 
-Expected document row shape:
+Expected article row shape:
 
-```json
-{
-  "id": "...",
-  "title": "...",
-  "url": "...",
-  "body": "..."
-}
+```text
+article_id,title,article_type,url,body
 ```
 
-Expected expert-written question row shape:
+Expected support question row shape:
 
-```json
-{
-  "id": "...",
-  "question": "...",
-  "answer": "...",
-  "expected_doc_ids": ["..."]
-}
+```text
+question_id,question,answer,article_ids
 ```
 
 Ask the learner:
@@ -232,7 +270,7 @@ Ask the learner:
 - How would you define retrieval success at top 5?
 - Which article fields should appear in the final report?
 
-### 2. Retrieval Inputs Inspected
+### 3. Retrieval Inputs Inspected
 
 Unlock when the learner asks for any of:
 
@@ -247,7 +285,7 @@ Unlock when the learner asks for any of:
 Investigate:
 
 - `app/retrieval.py`.
-- `LexicalRetriever.from_jsonl`.
+- `LexicalRetriever.from_csv`.
 - `LexicalRetriever.search`.
 - `document_text`.
 - `tokenize`.
@@ -256,12 +294,12 @@ Investigate:
 - Shortest and longest articles by body length.
 - Whether titles contain useful retrieval terms.
 - Whether source paths are metadata rather than content.
-- One real expert-written question from `data/processed/questions.jsonl`, the top 5 results returned by `LexicalRetriever`, and whether any returned id matches `expected_doc_ids`.
+- One real support question from `data/onboarding/support_questions.csv`, the top 5 results returned by `LexicalRetriever`, and whether any returned id matches `article_ids`.
 
 Explain:
 
 - The backend team already wrote `app/retrieval.py`; Quest 1 is about measuring how well that lexical retriever performs.
-- `LexicalRetriever.from_jsonl` loads `data/processed/documents.jsonl`.
+- `LexicalRetriever.from_csv` loads `data/onboarding/articles.csv`.
 - `document_text` defines what text gets searched. The current baseline searches `title` plus `body`.
 - `tokenize` lowercases alphanumeric tokens.
 - `lexical_score` is a simple term-overlap score with IDF and document-length normalization.
@@ -269,10 +307,10 @@ Explain:
 - The report can cite `id`, `title`, and `url`.
 - The `url` is a source path, not the document content.
 
-Use a tiny script or command that imports `LexicalRetriever`, loads the processed documents, reads one question row, runs `search(question, top_k=5)`, and prints:
+Use a tiny script or command that imports `LexicalRetriever`, loads `data/onboarding/articles.csv`, reads one support question row, runs `search(question, top_k=5)`, and prints:
 
 - The question text.
-- The expected document ids.
+- The expected article ids from `article_ids`.
 - The retrieved document ids, titles, and scores.
 - Whether this one example is a hit or miss.
 
@@ -282,7 +320,7 @@ Ask the learner:
 - What would count as a retrieval hit?
 - What information from `SearchResult` should appear in the report?
 
-### 3. Likely Failure Cases Identified
+### 4. Likely Failure Cases Identified
 
 Unlock when the learner asks for any of:
 
@@ -315,7 +353,7 @@ Ask the learner:
 - Which examples should the implementation report highlight as likely risky cases?
 - Which question/article pairs look like good candidates for positive and negative examples?
 
-### 4. Report Requirements Captured
+### 5. Report Requirements Captured
 
 Unlock when the learner asks for any of:
 
@@ -339,7 +377,7 @@ The notes should say the final report needs:
 
 - Metric definitions.
 - Existing backend lexical retrieval score.
-- Evaluation dataset definition: `questions.jsonl` from `wixqa_expertwritten`.
+- Evaluation dataset definition: `data/onboarding/support_questions.csv`, created from the `wixqa_expertwritten` split.
 - Failed question count.
 - `retrieval_hit_rate@5`.
 - `num_failed_questions`.
@@ -349,7 +387,7 @@ The notes should say the final report needs:
 
 ## Technical Spec Artifact
 
-When all four EDA cards are complete, pause and consult with the learner before creating the spec.
+When all five EDA cards are complete, pause and consult with the learner before creating the spec.
 
 Say:
 
@@ -395,9 +433,9 @@ Use this structure:
 
 ## Data Tour Findings
 
-### Questions And Articles Understood
+### Current Chatbot Pipeline
 
-### Dataset Size
+### Questions And Articles Understood
 
 ### Retrieval Inputs
 

@@ -37,6 +37,7 @@ Check whether these files exist:
 - `analysis/ask.py`
 - `analysis/rag.py`
 - `app/retrieval.py`
+- `app/chatbot.py`
 - `analysis/run_baseline.py`
 - `analysis/metrics.py`
 
@@ -67,6 +68,7 @@ Report the first incomplete stage:
    - Needs `analysis/ask.py`.
    - Needs `analysis/rag.py`.
    - Needs `app/retrieval.py`.
+   - Needs `app/chatbot.py`.
    - Needs `analysis/run_baseline.py`.
    - Needs `analysis/metrics.py`.
 
